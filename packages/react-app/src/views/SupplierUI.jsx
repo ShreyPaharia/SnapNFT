@@ -5,10 +5,11 @@ import { formatEther, parseEther } from "@ethersproject/units";
 import { Card, Button, Modal, DatePicker, Divider, Input, Popconfirm, Progress, Slider, Spin, Switch, AutoComplete, Space, Select, Radio, Form, Menu, Dropdown, Upload } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone, UserOutlined, DownOutlined, UploadOutlined, InboxOutlined } from '@ant-design/icons';
 import React, { useState, useEffect } from "react";
-import {Ipfs, Slate, AppCanvas} from "../helpers"
+import {Ipfs, Slate, AppCanvas, uploadNFTStorage} from "../helpers"
 import AnchorService from "../anchorServices/anchor.service";
 import { Document, Page } from "react-pdf";
 import aggrementPdf from "./PaymentAggrement.pdf";
+
 
 import { STORAGE, STORAGE_URL } from "../constants";
 
@@ -254,71 +255,81 @@ const anchorMenus = (
 
 
 
-              //////NFT Query/////////
+              // //////NFT Query/////////
 
-              ////Total NFTs owned
-              const balance = (await zora.fetchBalanceOf(address)).toString();
-              console.log("Zora Balance: ",balance);
-              let tokenDataList = [];
+              // ////Total NFTs owned
+              // const balance = (await zora.fetchBalanceOf(address)).toString();
+              // console.log("Zora Balance: ",balance);
+              // let tokenDataList = [];
 
-              ////All tokens of USER
-              for(var i=0;i<balance;i++){
+              // ////All tokens of USER
+              // for(var i=0;i<balance;i++){
 
-                ////Media id of NFT owned
-                const mediaId = (await zora.fetchMediaOfOwnerByIndex(address,i)).toString();
-                console.log("Media ",i," :",mediaId);
+              //   ////Media id of NFT owned
+              //   const mediaId = (await zora.fetchMediaOfOwnerByIndex(address,i)).toString();
+              //   console.log("Media ",i," :",mediaId);
 
-                /////TokenData
-                const contentHash = (await zora.fetchContentHash(mediaId));
-                const metadataHash = (await zora.fetchMetadataHash(mediaId));
-                const contentURI = (await zora.fetchContentURI(mediaId));
-                const metadataURI = (await zora.fetchMetadataURI(mediaId));
-
-
-                const tokenData = {
-                  contentHash : contentHash,
-                  metadataHash: metadataHash,
-                  contentURI  : contentURI,
-                  metadataURI : metadataURI
-                }
-                tokenDataList.push(tokenData);
-                ////
-              }
-
-              console.log(tokenDataList);
-
-              ///////NFT Query/////////
+              //   /////TokenData
+              //   const contentHash = (await zora.fetchContentHash(mediaId));
+              //   const metadataHash = (await zora.fetchMetadataHash(mediaId));
+              //   const contentURI = (await zora.fetchContentURI(mediaId));
+              //   const metadataURI = (await zora.fetchMetadataURI(mediaId));
 
 
+              //   const tokenData = {
+              //     contentHash : contentHash,
+              //     metadataHash: metadataHash,
+              //     contentURI  : contentURI,
+              //     metadataURI : metadataURI
+              //   }
+              //   tokenDataList.push(tokenData);
+              //   ////
+              // }
+
+              // console.log(tokenDataList);
+
+              // ///////NFT Query/////////
 
 
-              // ////NFT Minting///////
+
+
+              ////NFT Minting///////
               // const metadataJSON = generateMetadata('zora-20210101', {
               //   description: '',
               //   mimeType: 'text/plain',
               //   name: '',
               //   version: 'zora-20210101',
               // })
+
+              const metaData = await uploadNFTStorage({
+                name:'Token', //Required
+                version:'1',
+                description:'TokenAsset', //Required
+                image: new File([/* data */], 'pinpie.jpg', { type: 'image/jpg' }) //Required - Can be used for LOGO
+
+              })
+              console.log(metaData)
               
-              // const contentHash = sha256FromBuffer(Buffer.from('Ours12 Truly,'))
-              // const metadataHash = sha256FromBuffer(Buffer.from(metadataJSON))
-              // const mediaData = constructMediaData(
-              //   'https://ipfs.io/ipfs/bafybeifyqibqlheu7ij7fwdex4y2pw2wo7eaw2z6lec5zhbxu3cvxul6h4',
-              //   'https://ipfs.io/ipfs/bafybeifpxcq2hhbzuy2ich3duh7cjk4zk4czjl6ufbpmxep247ugwzsny4',
-              //   contentHash,
-              //   metadataHash
-              // )
+              const metaDataUrlUpdated = 'https://'+metaData.url;
+              const contentHash = sha256FromBuffer(Buffer.from('Ours123 Truly,'))
+              const metadataHash = sha256FromBuffer(Buffer.from(metaDataUrlUpdated))
+              const mediaData = constructMediaData(
+                'https://ipfs.io/ipfs/bafybeifyqibqlheu7ij7fwdex4y2pw2wo7eaw2z6lec5zhbxu3cvxul6h4',
+                metaDataUrlUpdated,
+                contentHash,
+                metadataHash
+              )
 
-              // const bidShares = constructBidShares(
-              //   10, // creator share
-              //   90, // owner share
-              //   0 // prevOwner share
-              // )
-              // const tx = await zora.mint(mediaData, bidShares)
-              // await tx.wait(8) // 8 confirmations to finalize
+              const bidShares = constructBidShares(
+                10, // creator share
+                90, // owner share
+                0 // prevOwner share
+              )
+              const tx = await zora.mint(mediaData, bidShares)
+              await tx.wait(8) // 8 confirmations to finalize
 
-              // console.log("zNFT Minted:",tx)
-              // //////NFT Minting/////////
+              console.log("zNFT Minted:",tx)
+              //////NFT Minting/////////
               
               setVisible(true);
             }}
