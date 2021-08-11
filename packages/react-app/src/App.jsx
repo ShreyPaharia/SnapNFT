@@ -12,6 +12,14 @@ import "./App.css";
 import { UserAccount, Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
+
+import { Zora, 
+  constructBidShares,
+  constructMediaData,
+  sha256FromBuffer,
+  generateMetadata,
+} from '@zoralabs/zdk'
+
 import {
   useBalance,
   useContractLoader,
@@ -26,6 +34,8 @@ import {
 import AuthService from "./authServices/auth.service";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph, SupplierUI, AnchorUI, LoginUI, RegisterUI, HistoryUI, HomeUI, DepositUI } from "./views";
+
+const { ethers } = require("ethers");
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -114,6 +124,8 @@ function App(props) {
   const gasPrice = useGasPrice(targetNetwork, "fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProvider = useUserProvider(injectedProvider, localProvider);
+
+  const zora = new Zora(userProvider.getSigner(),targetNetwork.chainId);
   const address = useUserAddress(userProvider);
 
   // You can warn the user if you would like them to be on a specific network
@@ -560,6 +572,11 @@ function App(props) {
               tx={tx}
               writeContracts={writeContracts}
               readContracts={readContracts}
+              zora={zora}
+              constructBidShares = {constructBidShares} 
+              constructMediaData = {constructMediaData} 
+              sha256FromBuffer = {sha256FromBuffer} 
+              generateMetadata = {generateMetadata} 
               // MultisigWalletContract={MultisigWalletContract}
               // setMultisigWalletContract={setMultisigWalletContract}
             />
