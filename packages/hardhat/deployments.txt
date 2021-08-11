@@ -1,0 +1,16 @@
+deploying "Migrations" (tx: 0xc54990a54a8399b9b3b02f45a08efe13b23a84e80129c3f05e64c60e2f88b065)...: deployed at 0xa9955A703D47cEAd3548b015e27262DEb3f6444E with 176072 gas
+deploying "USDC" (tx: 0x2ab7f98f591ab66cc66cd2c3587a2b5baee842bf69e4802176226e0e1881fa15)...: deployed at 0x8276C1fCa65328ECC71Ca2a816D3389557335282 with 688861 gas
+deploying "CashflowTokens" (tx: 0x04bef62d14e21ec05489cfa79dc0781e35ba5fdc3418985caf41c3a12e7dff85)...: deployed at 0xBfAB1352158F67A4762E1adF9EE9EfD5a3Df5054 with 2249471 gas
+deploying "MultiSigWallet" (tx: 0xf3146023c16eba2dcf77f490cb5d94f410c117951d6d4439807a16b9420ccd48)...: deployed at 0x0A50a04aB704aEaAa863D8a683D57762c6cbDa77 with 2579745 gas
+deploying "MultiSigWalletFactory" (tx: 0x10db27db184cd133405792ff0d2be0161ef6f484cbf2f15f76e8bb46f27604d8)...: deployed at 0xE175BAe096039547Ee431166e05581ea81ef3Eeb with 2882543 gas
+Deployer:  0x64bdCD3513388D93431F7D4ff429553bb173D0b2
+Anchor:  0x5cC377D9c84136E708C612b00a2617DF635f83ae
+Supplier:  0x5cC377D9c84136E708C612b00a2617DF635f83ae
+deploying "PriceConsumerV3" (tx: 0x968d53442e38c666708036bde3c5dff9bbd4df226614b5d22bfd89c2e95e48e6)...: deployed at 0x99601133ECe00Eb6c3B14EFC0eDf706478D8A165 with 175565 gas
+ETH PRICE: 2873
+deploying "SuperDepositToken" (tx: 0x7e319cd2fd027e8cfa57cd5723d1b99c045f89ae23b7bca2e39222c6fa40d644)...: deployed at 0x7b2C0b80c9944C00D1F550c8DA5E7B177BD191f2 with 559985 gas
+deploying "LendingPoolDF" (tx: 0x5025feffc8fe5fe337ece64ed143dc9a7ef672c99edfde2ba13ec4e5a9ffc855)...: deployed at 0x80C2956A99790b1069cbc4F9b2df4d92111141d5 with 1669430 gas
+0x80C2956A99790b1069cbc4F9b2df4d92111141d5
+$ hardhat run scripts/publish.js
+✅  Published contracts to the subgraph package.
+Done in 121.87s.

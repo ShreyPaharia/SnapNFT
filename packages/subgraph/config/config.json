@@ -1,0 +1,10 @@
+{
+  "mumbai_CashflowTokensAddress": "0xE076341997771AB62fe184d1101BCd78d18053e2",
+  "mumbai_LendingPoolDFAddress": "0x8be34D7830d446747B95Aa3ace0eaA4FF19b2007",
+  "mumbai_MigrationsAddress": "0x4AE7ae2ddeb53bE55aC1dF732DB6bd82fE375DBe",
+  "mumbai_MultiSigWalletAddress": "0x5654740BF119bdC3214485e82D73358E56d7B759",
+  "mumbai_MultiSigWalletFactoryAddress": "0x45d736c32e64AC430c091b419B83E40F14F70a80",
+  "mumbai_PriceConsumerV3Address": "0x6736422d082B6f12de3cCBE0D749CA2FF0Ea3964",
+  "mumbai_SuperDepositTokenAddress": "0x8484C6b4dEa25cc60c5d8bB0477af74Ba9C7eb64",
+  "mumbai_USDCAddress": "0x0120D55fe38c51C964115dDb2C06Db2B4fb38522"
+}
