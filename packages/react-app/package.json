@@ -15,9 +15,11 @@
     ]
   },
   "dependencies": {
+    "@3id/connect": "^0.1.6",
     "@ant-design/icons": "^4.2.2",
     "@apollo/client": "^3.4.5",
     "@apollo/react-hooks": "^4.0.0",
+    "@ceramicnetwork/3id-did-resolver": "^1.3.1",
     "@ceramicnetwork/http-client": "^1.1.1",
     "@ceramicstudio/idx": "^0.12.1",
     "@ethersproject/address": "^5.0.5",
@@ -59,6 +61,7 @@
     "chai-as-promised": "7.1.1",
     "chai-bignumber": "3.0.0",
     "convict": "^6.2.0",
+    "dids": "^2.4.0",
     "dotenv": "^8.2.0",
     "eth-hooks": "^1.1.2",
     "ethereum-waffle": "^3.4.0",
@@ -67,6 +70,7 @@
     "graphql": "^15.5.1",
     "ipfs-api": "^26.1.2",
     "isomorphic-fetch": "^3.0.0",
+    "key-did-resolver": "^1.3.1",
     "nft.storage": "^3.1.3",
     "node-fetch": "^2.6.1",
     "node-watch": "^0.7.1",

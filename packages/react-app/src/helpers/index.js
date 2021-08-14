@@ -4,3 +4,4 @@ export { default as Slate } from "./slate_upload";
 export { default as AppCanvas } from "./loadCanvas";
 export { default as Graph } from "./graphQuery";
 export * from "./nftStorage";
+export * from "./ceramic";

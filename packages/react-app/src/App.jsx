@@ -11,7 +11,7 @@ import Web3Modal from "web3modal";
 import "./App.css";
 import { UserAccount, Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
-import { Transactor } from "./helpers";
+import { Transactor,authenticateCeramic } from "./helpers";
 
 import { Zora, 
   constructBidShares,
@@ -117,6 +117,8 @@ function App(props) {
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
 
   const [injectedProvider, setInjectedProvider] = useState();
+  const [ceramicIdx, setCeramicIdx] = useState();
+
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangePrice(targetNetwork, mainnetProvider);
 
@@ -127,7 +129,6 @@ function App(props) {
 
   const zora = new Zora(userProvider.getSigner(),targetNetwork.chainId);
   const address = useUserAddress(userProvider);
-
   // You can warn the user if you would like them to be on a specific network
   const localChainId = localProvider && localProvider._network && localProvider._network.chainId;
   const selectedChainId = userProvider && userProvider._network && userProvider._network.chainId;
@@ -280,6 +281,9 @@ function App(props) {
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
+    const idx = await authenticateCeramic(provider);
+    setCeramicIdx(idx);
+
     setInjectedProvider(new Web3Provider(provider));
   }, [setInjectedProvider]);
 
@@ -577,6 +581,8 @@ function App(props) {
               constructMediaData = {constructMediaData} 
               sha256FromBuffer = {sha256FromBuffer} 
               generateMetadata = {generateMetadata} 
+              ceramicIdx={ceramicIdx}
+
               // MultisigWalletContract={MultisigWalletContract}
               // setMultisigWalletContract={setMultisigWalletContract}
             />
