@@ -12,6 +12,15 @@ export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77";
 //NFT.Storage Key
 export const NFT_STORAGE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDAwNTFEMjQzM0Q5MjFBN0M1ZTRFZTBmYTA5NzY4ZDg1ZmYwNTkzZkQiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTYyODcxNTkzNzU0NCwibmFtZSI6IlNuYXBORlQifQ.xiq1ikx2d3IqTpW8M2FO7PU6gMSxbveAVVxBYW1W0gs";
 
+// export const TEXTILE_HUB_KEY = "bsrgdt7tard27y2bcstf3j37yla";
+// export const TEXTILE_HUB_SECRET = "bim4ndfwe6eoz75abat54f5zhxmn5jwhh7qzw75a";
+export const TEXTILE_HUB_STAGING_HOST = process.env.TEXTILE_HUB_STAGING_HOST;
+export const TEXTILE_HUB_BUCKET_NAME = "SnapNFT_Bucket";
+
+export const TEXTILE_HUB_KEY = "b6trtujh4ncsgugza5tlkem6gbq";
+export const TEXTILE_HUB_SECRET = "but6hqlzsb5ylyedx3wmwuqopq5v22fqzmags6pa";
+export const TEXTILE_IPNS = "https://hub.textile.io/ipns/";
+
 //Use file storage
 export const STORAGE = "IPFS";
 // export const STORAGE = "FILECOIN";

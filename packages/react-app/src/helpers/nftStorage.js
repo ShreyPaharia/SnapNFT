@@ -2,7 +2,7 @@ import { NFTStorage, File } from 'nft.storage'
 import {NFT_STORAGE_KEY} from '../constants'
 const client = new NFTStorage({ token: NFT_STORAGE_KEY })
 
-export async function uploadNFTStorage (json) {
+export default async function uploadNFTStorage (json) {
     // const metadata = await client.store({
     // name: 'Pinpie',
     // description: 'Pin is not delicious beef!',

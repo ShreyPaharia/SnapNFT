@@ -6,14 +6,15 @@ import { Card, Button, Modal, DatePicker, Divider, Input, Popconfirm, Progress, 
 import { EyeInvisibleOutlined, EyeTwoTone, UserOutlined, DownOutlined, UploadOutlined, InboxOutlined } from '@ant-design/icons';
 import React, { useState, useEffect } from "react";
 import {Ipfs, Slate, AppCanvas, uploadNFTStorage} from "../helpers"
+import { getIdentity, getOrCreateBucket, pushAllFile, getFilters, pushAllFile2, pullFile, logLinks} from "./../textileHubUtil"
+import { getBucketKey } from "./../textileHubUtill2"
 import AnchorService from "../anchorServices/anchor.service";
 import { Document, Page } from "react-pdf";
 import aggrementPdf from "./PaymentAggrement.pdf";
+import { useUserAddress } from "eth-hooks";
 
 
-import { STORAGE, STORAGE_URL } from "../constants";
-
-
+import { STORAGE, STORAGE_URL, TEXTILE_HUB_BUCKET_NAME } from "../constants";
 
 
 export default function SupplierUI({
@@ -34,6 +35,7 @@ export default function SupplierUI({
   constructBidShares,
   constructMediaData,
   sha256FromBuffer,
+  userProvider,
   generateMetadata
 }) {
 
@@ -48,6 +50,7 @@ export default function SupplierUI({
   const [amount, setAmount] = useState("");
   const [ethPrice, setEthPrice] = useState("");
   const [ipfsHash, setIpfsHash] = useState("");
+  const [hubBucket, setHubBucket] = useState("");
   const [buffer, setBuffer] = useState();
   const [visible, setVisible] = useState(false);
   const [numberTokens, setNumberTokens] = useState(null);
@@ -56,6 +59,38 @@ export default function SupplierUI({
   const [walletTo, setWalletTo] = useState("");
 
   const [anchors, setAnchors] = useState([]);
+  const [fileList, setFileList] = useState([]);
+  const [filters, setFilters] = useState([]);
+  const [filterSrc, setFilterSrc] = useState("");
+  // const [address, setAddress] = useState([]);
+  const [signer, setSigner] = useState(null);
+  const [hubId, setHubId] = useState(null);
+  const [bucketObj, setBucketObj] = useState(null);
+  const connecTotHub = async () => {
+    try {
+      let signer1;
+      if(!hubId){
+        signer1 = userProvider.getSigner();
+        const hubId = await getIdentity(signer1, address);
+        setHubId(hubId);
+        setSigner(signer1);
+      }
+        const buckets = await getOrCreateBucket(TEXTILE_HUB_BUCKET_NAME, signer1, address);
+        setBucketObj(buckets);
+        console.log(" ********* bucket ", buckets);
+        return buckets;
+       } catch (err){
+         console.log(" ERROR ", err);
+         
+       }  
+
+    }
+
+  // useEffect(async () => {
+  //   // await getBucketKey()
+  //   connecTotHub();
+  //   }, []);
+
 
 //   useEffect( async () => {
 //   AnchorService.getAnchorList().then( res => {
@@ -169,46 +204,54 @@ const anchorMenus = (
         </Upload.Dragger>
 
 
-        <Upload.Dragger name="files" action="/upload.do"
+        <div style={{ margin: '24px 0' }} />
+
+        <Upload name="directory" action="/upload.do"
           onChange={ async (e) => {
+            setFileList(e && e.fileList);
             // e.preventDefault()
-            console.log(" upload event ", e);
-            const file = e.fileList[0] && e.fileList[0].originFileObj;
-            const reader = new window.FileReader()
-            reader.readAsArrayBuffer(file)
-            reader.onloadend = async () => {
-              const buff = Buffer(reader.result);
-              setBuffer(buff);
-              console.log('buffer', buff);
-              if(STORAGE==="IPFS"){
-                Ipfs.files.add(buff, (error, result) => {
-                  if(error) {
-                    console.error(error)
-                    return
-                  }
-                  console.log(" ipfs Hash ", result[0] && result[0].hash);
-                  setIpfsHash(result[0] && result[0].hash);
-                })
-              } else if (STORAGE=="FILECOIN"){
-                const response = await Slate(file)
-                if(response.decorator!=="V1_UPLOAD_TO_SLATE"){
-                  console.log("ERROR IN UPLOAD",response);
-                } else {
-                  setIpfsHash(response && response.data.cid);
-                  console.log("UPLOAD DONE:    ", response)
-                }
+          //  try {
+          //   await connecTotHub();
+          //   // const textHubId = createIdentity(signer, address);
+          //   const bucket = await getOrCreateBucket(TEXTILE_HUB_BUCKET_NAME, signer, address);
+          //   console.log(" ********* bucket ", bucket);
+          //  } catch (err){
+          //    console.log(" ERROR ", err);
+             
+          //  }  
+            
+            // console.log(" ****** upload event ", e);
+            // const file = e.fileList[0] && e.fileList[0].originFileObj;
+            // const reader = new window.FileReader()
+            // reader.readAsArrayBuffer(file)
+            // reader.onloadend = async () => {
+            //   const buff = Buffer(reader.result);
+            //   setBuffer(buff);
+            //   // console.log('buffer', buff);
+            //   if(STORAGE==="IPFS"){
+            //     Ipfs.files.add(buff, (error, result) => {
+            //       if(error) {
+            //         console.error(error)
+            //         return
+            //       }
+            //       console.log(" ipfs Hash ", result[0] && result[0].hash);
+            //       setIpfsHash(result[0] && result[0].hash);
+            //     })
+            //   } else if (STORAGE=="FILECOIN"){
+            //     const response = await Slate(file)
+            //     if(response.decorator!=="V1_UPLOAD_TO_SLATE"){
+            //       console.log("ERROR IN UPLOAD",response);
+            //     } else {
+            //       setIpfsHash(response && response.data.cid);
+            //       console.log("UPLOAD DONE:    ", response)
+            //     }
                 
-              }
-            }
+            //   }
+            // }
         }}
-        >
-        <p className="ant-upload-drag-icon">
-            <InboxOutlined />
-        </p>
-        <p className="ant-upload-text">Filter Upload</p>
-        <p className="ant-upload-hint">Click or drag file to this area to upload the Filter</p>
-        <p className="ant-upload-hint">Support for a single or bulk upload.</p>
-        </Upload.Dragger>
+        directory>
+          <Button icon={<UploadOutlined />}>Upload Directory</Button>
+        </Upload>
 
         <div style={{ margin: '24px 0' }} />
 
@@ -248,8 +291,57 @@ const anchorMenus = (
         {/* </Input.Group> */}
         </div>
         <Divider />
+        <Button 
+          onClick={async () => {
+            try {
+              const path = fileList[0] && fileList[0].originFileObj.webkitRelativePath;
+              const  filterName = path && path.substr(0, path.indexOf("/"));
+              localStorage.setItem("path", filterName||"");
+
+              console.log(" files to upload ", fileList);
+              const bucketO = await connecTotHub();
+              await logLinks(bucketO.buckets, bucketO.bucketKey);
+              console.log(" files to bucketObj ", bucketO);
+              await pushAllFile2(fileList, bucketO.buckets, bucketO.bucketKey);
+              const links = await logLinks(bucketO.buckets, bucketO.bucketKey);
+              setHubBucket(links);
+            } catch (err){
+              console.log(" ERROR  uploading", err);
+
+            }
+          
+          }}
+          >
+          Upload
+          </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+          <Button 
+          onClick={async () => {
+            try {
+              const bucketO = await connecTotHub();
+              await logLinks(bucketO.buckets, bucketO.bucketKey);
+              // console.log(" files to bucketObj ", bucketO);
+              console.log(" localStorage.getItem(path) ->", localStorage.getItem("path"));
+              
+              const filterArr = await pullFile(bucketO.buckets, bucketO.bucketKey, localStorage.getItem("path"));
+              console.log(" filterArr ", filterArr);
+              setFilters(filterArr);
+            } catch (err){
+              console.log(" ERROR  uploading", err);
+
+            }
+          
+          }}
+          >
+          Show Filters
+          </Button> &nbsp;&nbsp;&nbsp;&nbsp;
         <Button  type="primary"
             onClick={async () => {
+              const bucketO = await connecTotHub();
+              const links = await logLinks(bucketO.buckets, bucketO.bucketKey);
+              const src = links.url+"/"+localStorage.getItem("path");
+              setFilterSrc(src)
+
+   
               // const price = await tx(readContracts.PriceConsumerV3.ethPrice());
               // setEthPrice(price);
 
@@ -301,34 +393,34 @@ const anchorMenus = (
               //   version: 'zora-20210101',
               // })
 
-              const metaData = await uploadNFTStorage({
-                name:'Token', //Required
-                version:'1',
-                description:'TokenAsset', //Required
-                image: new File([/* data */], 'pinpie.jpg', { type: 'image/jpg' }) //Required - Can be used for LOGO
+              // const metaData = await uploadNFTStorage({
+              //   name:'Token', //Required
+              //   version:'1',
+              //   description:'TokenAsset', //Required
+              //   image: new File([/* data */], 'pinpie.jpg', { type: 'image/jpg' }) //Required - Can be used for LOGO
 
-              })
-              console.log(metaData)
+              // })
+              // console.log(metaData)
               
-              const metaDataUrlUpdated = 'https://'+metaData.url;
-              const contentHash = sha256FromBuffer(Buffer.from('Ours123 Truly,'))
-              const metadataHash = sha256FromBuffer(Buffer.from(metaDataUrlUpdated))
-              const mediaData = constructMediaData(
-                'https://ipfs.io/ipfs/bafybeifyqibqlheu7ij7fwdex4y2pw2wo7eaw2z6lec5zhbxu3cvxul6h4',
-                metaDataUrlUpdated,
-                contentHash,
-                metadataHash
-              )
+              // const metaDataUrlUpdated = 'https://'+metaData.url;
+              // const contentHash = sha256FromBuffer(Buffer.from('Ours123 Truly,'))
+              // const metadataHash = sha256FromBuffer(Buffer.from(metaDataUrlUpdated))
+              // const mediaData = constructMediaData(
+              //   'https://ipfs.io/ipfs/bafybeifyqibqlheu7ij7fwdex4y2pw2wo7eaw2z6lec5zhbxu3cvxul6h4',
+              //   metaDataUrlUpdated,
+              //   contentHash,
+              //   metadataHash
+              // )
 
-              const bidShares = constructBidShares(
-                10, // creator share
-                90, // owner share
-                0 // prevOwner share
-              )
-              const tx = await zora.mint(mediaData, bidShares)
-              await tx.wait(8) // 8 confirmations to finalize
+              // const bidShares = constructBidShares(
+              //   10, // creator share
+              //   90, // owner share
+              //   0 // prevOwner share
+              // )
+              // const tx = await zora.mint(mediaData, bidShares)
+              // await tx.wait(8) // 8 confirmations to finalize
 
-              console.log("zNFT Minted:",tx)
+              // console.log("zNFT Minted:",tx)
               //////NFT Minting/////////
               
               setVisible(true);
@@ -347,7 +439,7 @@ const anchorMenus = (
               okText="Submit"
               // cancelText="Ciao"
               width={1000}>
-                <AppCanvas filterSrc={`${STORAGE_URL}${ipfsHash}`}></AppCanvas>
+                <AppCanvas filterSrc={`${filterSrc}/filter.js`} rootPath={`${filterSrc}`}></AppCanvas>
                 {/* {STORAGE_URL+`${ipfsHash}`} */}
             {/* <Document
               file={aggrementPdf}
