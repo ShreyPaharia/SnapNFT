@@ -1,5 +1,5 @@
 {
-  "address": "0x6736422d082B6f12de3cCBE0D749CA2FF0Ea3964",
+  "address": "0x429EFa36ff406aA9DCAE57A1488dE2097ABb1556",
   "abi": [
     {
       "inputs": [],
@@ -18,45 +18,58 @@
       ],
       "stateMutability": "view",
       "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "maticPrice",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     }
   ],
-  "transactionHash": "0xb2d55973dadbc78390420649a44732dfae152840f7b0006d2dd82105448c4bca",
+  "transactionHash": "0x8bf068b3a2ee197385712619c53c0876ea86d3e49b51050de9e183ee6048d37e",
   "receipt": {
     "to": null,
-    "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-    "contractAddress": "0x6736422d082B6f12de3cCBE0D749CA2FF0Ea3964",
-    "transactionIndex": 1,
-    "gasUsed": "175565",
-    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000002000000000000000000000000000000000000000000000000000800000000000000000040100000000000000000000000000000000000100000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000040000000004000000000000000200001000000000000000000002000000000100000000000000000000000000000000000000000000000000000000000000000000000100000",
-    "blockHash": "0x32b156b912b338d11f3beace45e3af7fc01b7ef5c646076e0231f2b5b77f89cc",
-    "transactionHash": "0xb2d55973dadbc78390420649a44732dfae152840f7b0006d2dd82105448c4bca",
+    "from": "0x64bdCD3513388D93431F7D4ff429553bb173D0b2",
+    "contractAddress": "0x429EFa36ff406aA9DCAE57A1488dE2097ABb1556",
+    "transactionIndex": 0,
+    "gasUsed": "201038",
+    "logsBloom": "0x80000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000018020000000000000000000000000000000000000000000000000000000800000000000000000000100000000000000000000000000000000000000000000000000000000000080000000000000000000400000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000024000000000000000000001000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000100000",
+    "blockHash": "0x030c10f253e22bc4de81ba3290e6afa4e75509e983bb2c4cd5c3641c2f7de4bd",
+    "transactionHash": "0x8bf068b3a2ee197385712619c53c0876ea86d3e49b51050de9e183ee6048d37e",
     "logs": [
       {
-        "transactionIndex": 1,
-        "blockNumber": 17427328,
-        "transactionHash": "0xb2d55973dadbc78390420649a44732dfae152840f7b0006d2dd82105448c4bca",
+        "transactionIndex": 0,
+        "blockNumber": 17635865,
+        "transactionHash": "0x8bf068b3a2ee197385712619c53c0876ea86d3e49b51050de9e183ee6048d37e",
         "address": "0x0000000000000000000000000000000000001010",
         "topics": [
           "0x4dfe1bbbcf077ddc3e01291eea2d5c70c2b422b415d95645b9adcfd678cb1d63",
           "0x0000000000000000000000000000000000000000000000000000000000001010",
-          "0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266",
-          "0x000000000000000000000000c275dc8be39f50d12f66b6a63629c39da5bae5bd"
+          "0x00000000000000000000000064bdcd3513388d93431f7d4ff429553bb173d0b2",
+          "0x000000000000000000000000e4b8e9222704401ad16d4d826732953daf07c7e2"
         ],
-        "data": "0x0000000000000000000000000000000000000000000000000012b6435bccbc0000000000000000000000000000000000000000000000000051cbb556db91b40000000000000000000000000000000000000000000000010c848409a2fb4dc97b00000000000000000000000000000000000000000000000051b8ff137fc4f80000000000000000000000000000000000000000000000010c8496bfe6571a857b",
-        "logIndex": 1,
-        "blockHash": "0x32b156b912b338d11f3beace45e3af7fc01b7ef5c646076e0231f2b5b77f89cc"
+        "data": "0x00000000000000000000000000000000000000000000000000156d4a354a680000000000000000000000000000000000000000000000000033f9855ef3dc5000000000000000000000000000000000000000000000000000013d2f5c8315840000000000000000000000000000000000000000000000000033e41814be91e80000000000000000000000000000000000000000000000000001529ca6b85fec00",
+        "logIndex": 0,
+        "blockHash": "0x030c10f253e22bc4de81ba3290e6afa4e75509e983bb2c4cd5c3641c2f7de4bd"
       }
     ],
-    "blockNumber": 17427328,
-    "cumulativeGasUsed": "201344",
+    "blockNumber": 17635865,
+    "cumulativeGasUsed": "201038",
     "status": 1,
     "byzantium": true
   },
   "args": [],
-  "solcInputHash": "6fabbe30bb26f5bee2da3f6d9daecff3",
-  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"ethPrice\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"constructor\":{\"notice\":\"Network: Mumbai Aggregator: ETH/USD Decimals: 8 Address: 0x0715A7794a1dc8e42615F059dD6e406A6594651A\"},\"ethPrice()\":{\"notice\":\"Returns the latest price\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/price-feed/ETHUSDPrice.sol\":\"PriceConsumerV3\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/price-feed/AggregatorV3Interface.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\ninterface AggregatorV3Interface {\\n\\n  function decimals() external view returns (uint8);\\n  function description() external view returns (string memory);\\n  function version() external view returns (uint256);\\n\\n  // getRoundData and latestRoundData should both raise \\\"No data present\\\"\\n  // if they do not have data to report, instead of returning unset values\\n  // which could be misinterpreted as actual reported values.\\n\\n  function getRoundData(uint80 _roundId)\\n    external\\n    view\\n    returns (\\n      uint80 roundId,\\n      int256 answer,\\n      uint256 startedAt,\\n      uint256 updatedAt,\\n      uint80 answeredInRound\\n    );\\n\\n  function latestRoundData()\\n    external\\n    view\\n    returns (\\n      uint80 roundId,\\n      int256 answer,\\n      uint256 startedAt,\\n      uint256 updatedAt,\\n      uint80 answeredInRound\\n    );\\n\\n}\\n\",\"keccak256\":\"0xeb6beb3f08ef4fa5bd34397cbfdaae98a610395000bb279cf8c16a0d33e93b52\",\"license\":\"MIT\"},\"contracts/price-feed/ETHUSDPrice.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\nimport \\\"./AggregatorV3Interface.sol\\\";\\n\\ncontract PriceConsumerV3 {\\n\\n    AggregatorV3Interface internal priceFeed;\\n\\n    /**\\n     * Network: Mumbai\\n     * Aggregator: ETH/USD\\n     * Decimals: 8\\n     * Address: 0x0715A7794a1dc8e42615F059dD6e406A6594651A\\n     */\\n\\n    /* \\n     * @notice change address when deploying to mainnet\\n     */\\n\\n    constructor() {\\n        priceFeed = AggregatorV3Interface(0x0715A7794a1dc8e42615F059dD6e406A6594651A);\\n    }\\n\\n    /**\\n     * Returns the latest price\\n     */\\n\\n    function ethPrice() public view returns (int) {\\n        (, int price , , , ) = priceFeed.latestRoundData();\\n        return price / (10**8) ; // 8 decimals\\n    }\\n}\\n\",\"keccak256\":\"0xd5f96f2f5b3c1ceb122b585697e906bf0739ae82b765d481e05d306688d59128\",\"license\":\"MIT\"}},\"version\":1}",
-  "bytecode": "0x608060405234801561001057600080fd5b50600080546001600160a01b031916730715a7794a1dc8e42615f059dd6e406a6594651a1790556101cd806100466000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c8063ff186b2e14610030575b600080fd5b61003861004a565b60405190815260200160405180910390f35b6000805460408051633fabe5a360e21b8152905183926001600160a01b03169163feaf968c9160048083019260a0929190829003018186803b15801561008f57600080fd5b505afa1580156100a3573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906100c79190610102565b5050509150506305f5e100816100dd9190610151565b91505090565b805169ffffffffffffffffffff811681146100fd57600080fd5b919050565b600080600080600060a08688031215610119578081fd5b610122866100e3565b9450602086015193506040860151925060608601519150610145608087016100e3565b90509295509295909350565b60008261016c57634e487b7160e01b81526012600452602481fd5b600160ff1b82146000198414161561019257634e487b7160e01b81526011600452602481fd5b50059056fea26469706673582212206f2aa3cd67a5f21f4e12937a9832fef27c02605d371f5c4d393752ea4dbd173f64736f6c63430008040033",
-  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c8063ff186b2e14610030575b600080fd5b61003861004a565b60405190815260200160405180910390f35b6000805460408051633fabe5a360e21b8152905183926001600160a01b03169163feaf968c9160048083019260a0929190829003018186803b15801561008f57600080fd5b505afa1580156100a3573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906100c79190610102565b5050509150506305f5e100816100dd9190610151565b91505090565b805169ffffffffffffffffffff811681146100fd57600080fd5b919050565b600080600080600060a08688031215610119578081fd5b610122866100e3565b9450602086015193506040860151925060608601519150610145608087016100e3565b90509295509295909350565b60008261016c57634e487b7160e01b81526012600452602481fd5b600160ff1b82146000198414161561019257634e487b7160e01b81526011600452602481fd5b50059056fea26469706673582212206f2aa3cd67a5f21f4e12937a9832fef27c02605d371f5c4d393752ea4dbd173f64736f6c63430008040033",
+  "solcInputHash": "c498c08febadcd0092b38e2ffc3cbab0",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"ethPrice\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"maticPrice\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"constructor\":{\"notice\":\"Network: Mumbai Aggregator: ETH/USD Decimals: 8 Address: 0x0715A7794a1dc8e42615F059dD6e406A6594651A\"},\"ethPrice()\":{\"notice\":\"Returns the latest price\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/price-feed/ETHUSDPrice.sol\":\"PriceConsumerV3\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/price-feed/AggregatorV3Interface.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\r\\npragma solidity ^0.8.0;\\r\\n\\r\\ninterface AggregatorV3Interface {\\r\\n\\r\\n  function decimals() external view returns (uint8);\\r\\n  function description() external view returns (string memory);\\r\\n  function version() external view returns (uint256);\\r\\n\\r\\n  // getRoundData and latestRoundData should both raise \\\"No data present\\\"\\r\\n  // if they do not have data to report, instead of returning unset values\\r\\n  // which could be misinterpreted as actual reported values.\\r\\n\\r\\n  function getRoundData(uint80 _roundId)\\r\\n    external\\r\\n    view\\r\\n    returns (\\r\\n      uint80 roundId,\\r\\n      int256 answer,\\r\\n      uint256 startedAt,\\r\\n      uint256 updatedAt,\\r\\n      uint80 answeredInRound\\r\\n    );\\r\\n\\r\\n  function latestRoundData()\\r\\n    external\\r\\n    view\\r\\n    returns (\\r\\n      uint80 roundId,\\r\\n      int256 answer,\\r\\n      uint256 startedAt,\\r\\n      uint256 updatedAt,\\r\\n      uint80 answeredInRound\\r\\n    );\\r\\n\\r\\n}\\r\\n\",\"keccak256\":\"0xd45548730b0d27cf4cdc6f97f2f58d34e9008cf5c68e19d783e788b73c5ae842\",\"license\":\"MIT\"},\"contracts/price-feed/ETHUSDPrice.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\r\\npragma solidity ^0.8.0;\\r\\n\\r\\nimport \\\"./AggregatorV3Interface.sol\\\";\\r\\n\\r\\ncontract PriceConsumerV3 {\\r\\n\\r\\n    AggregatorV3Interface internal priceFeedEth;\\r\\n    AggregatorV3Interface internal priceFeedMatic;\\r\\n\\r\\n    /**\\r\\n     * Network: Mumbai\\r\\n     * Aggregator: ETH/USD\\r\\n     * Decimals: 8\\r\\n     * Address: 0x0715A7794a1dc8e42615F059dD6e406A6594651A\\r\\n     */\\r\\n\\r\\n    /* \\r\\n     * @notice change address when deploying to mainnet\\r\\n     */\\r\\n\\r\\n    constructor() {\\r\\n        priceFeedEth = AggregatorV3Interface(0x0715A7794a1dc8e42615F059dD6e406A6594651A);\\r\\n        priceFeedMatic = AggregatorV3Interface(0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada);\\r\\n\\r\\n    }\\r\\n\\r\\n    /**\\r\\n     * Returns the latest price\\r\\n     */\\r\\n\\r\\n    function ethPrice() public view returns (int) {\\r\\n        (, int price , , , ) = priceFeedEth.latestRoundData();\\r\\n        return price ; // 8 decimals\\r\\n    }\\r\\n\\r\\n    function maticPrice() public view returns (int) {\\r\\n        (, int price , , , ) = priceFeedMatic.latestRoundData();\\r\\n        return price ; // 8 decimals\\r\\n    }\\r\\n}\\r\\n\",\"keccak256\":\"0x30bc38f729f835b580ff6c68c5884a992660ad980d4e90e740965fd036d36ee9\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50600080546001600160a01b0319908116730715a7794a1dc8e42615f059dd6e406a6594651a179091556001805490911673d0d5e3db44de05e9f294bb0a3beeaf030de24ada1790556101da806100686000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c806345ea451a1461003b578063ff186b2e14610055575b600080fd5b61004361005d565b60405190815260200160405180910390f35b6100436100f1565b600080600160009054906101000a90046001600160a01b03166001600160a01b031663feaf968c6040518163ffffffff1660e01b815260040160a06040518083038186803b1580156100ae57600080fd5b505afa1580156100c2573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906100e69190610155565b509195945050505050565b6000805460408051633fabe5a360e21b8152905183926001600160a01b03169163feaf968c9160048083019260a0929190829003018186803b1580156100ae57600080fd5b805169ffffffffffffffffffff8116811461015057600080fd5b919050565b600080600080600060a0868803121561016c578081fd5b61017586610136565b945060208601519350604086015192506060860151915061019860808701610136565b9050929550929590935056fea2646970667358221220d0b3d4b2c18088879290606d24c93a65ec1847f43876bf3e4185f90ba3a9b04e64736f6c63430008040033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100365760003560e01c806345ea451a1461003b578063ff186b2e14610055575b600080fd5b61004361005d565b60405190815260200160405180910390f35b6100436100f1565b600080600160009054906101000a90046001600160a01b03166001600160a01b031663feaf968c6040518163ffffffff1660e01b815260040160a06040518083038186803b1580156100ae57600080fd5b505afa1580156100c2573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906100e69190610155565b509195945050505050565b6000805460408051633fabe5a360e21b8152905183926001600160a01b03169163feaf968c9160048083019260a0929190829003018186803b1580156100ae57600080fd5b805169ffffffffffffffffffff8116811461015057600080fd5b919050565b600080600080600060a0868803121561016c578081fd5b61017586610136565b945060208601519350604086015192506060860151915061019860808701610136565b9050929550929590935056fea2646970667358221220d0b3d4b2c18088879290606d24c93a65ec1847f43876bf3e4185f90ba3a9b04e64736f6c63430008040033",
   "devdoc": {
     "kind": "dev",
     "methods": {},
@@ -79,9 +92,17 @@
       {
         "astId": 51,
         "contract": "contracts/price-feed/ETHUSDPrice.sol:PriceConsumerV3",
-        "label": "priceFeed",
+        "label": "priceFeedEth",
         "offset": 0,
         "slot": "0",
+        "type": "t_contract(AggregatorV3Interface)45"
+      },
+      {
+        "astId": 54,
+        "contract": "contracts/price-feed/ETHUSDPrice.sol:PriceConsumerV3",
+        "label": "priceFeedMatic",
+        "offset": 0,
+        "slot": "1",
         "type": "t_contract(AggregatorV3Interface)45"
       }
     ],
