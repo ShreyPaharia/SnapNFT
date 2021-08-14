@@ -12,6 +12,8 @@ import "./App.css";
 import { UserAccount, Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
+import { createIdentity, getIdentity } from "./textileHubUtil";
+
 
 import { Zora, 
   constructBidShares,

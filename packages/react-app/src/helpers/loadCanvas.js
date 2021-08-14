@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import loadFilter from './loadFilter';
-const AppCanvas = ({filterSrc}) => {
-  console.log("filterSrc ->", filterSrc);
+const AppCanvas = ({filterSrc, rootPath}) => {
+  // console.log("filterSrc ->", filterSrc, window.main);
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     loadFilter(() => {
       setLoaded(true);
-      window.main();
+      // window.main && window.main();
+      if(window.main){
+        console.log(" Loading success ");
+        window.main(rootPath);
+      }
+      else{
+        console.log(" Not loadded ");
+      }
+
     }, filterSrc);
   }, [filterSrc]);
   return (
@@ -14,7 +22,7 @@ const AppCanvas = ({filterSrc}) => {
       {loaded ? (
         <>
           <canvas width="600" height="600" id="jeeFaceFilterCanvas"></canvas>
-          <script> main(); </script>
+          <script> main(rootPath); </script>
         </>
       ) : (
         ""

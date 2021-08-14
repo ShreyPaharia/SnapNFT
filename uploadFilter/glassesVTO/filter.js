@@ -1,5 +1,20 @@
 "use strict";
+const loadscript = (scriptSrc, callback) => {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = scriptSrc;
+    document.getElementsByTagName('head')[0].appendChild(script);
+    script.onload = () => {
+      // if (callback) callback();
+      resolve();
+    };
+  })
+};
 
+
+// import JeelizThreeHelper from "./helpers/JeelizThreeHelper"
+// import JEELIZFACEFILTER from "./dist/jeelizFaceFilter.module"
+// import JeelizResizer from "./helpers/JeelizResizer"
 let THREECAMERA = null;
 
 // callback: launched if a face is detected or lost.
@@ -12,7 +27,7 @@ function detect_callback(faceIndex, isDetected) {
 }
 
 // build the 3D. called once when Jeeliz Face Filter is OK:
-function init_threeScene(spec) {
+function init_threeScene(spec, url) {
   const threeStuffs = JeelizThreeHelper.init(spec, detect_callback);
 
   // improve WebGLRenderer settings:
@@ -21,10 +36,10 @@ function init_threeScene(spec) {
 
   // CREATE THE GLASSES AND ADD THEM
   const r = JeelizThreeGlassesCreator({
-    envMapURL: "./filter/assets/envMap.jpg",
-    frameMeshURL: "./filter/assets/glassesFramesBranchesBent.json",
-    lensesMeshURL: "./filter/assets/glassesLenses.json",
-    occluderURL: "./filter/assets/face.json"
+    envMapURL: url + "/assets/envMap.jpg",
+    frameMeshURL: url + "/assets/glassesFramesBranchesBent.json",
+    lensesMeshURL: url + "/assets/glassesLenses.json",
+    occluderURL: url + "/assets/face.json"
   });
 
   // vertical offset:
@@ -53,22 +68,32 @@ function init_threeScene(spec) {
 } // end init_threeScene()
 
 // entry point:
-function main(){
+async function main(url){
   console.log(" *********** jeeFaceFilterCanvas");
+  const p1 = loadscript(url+"/helpers/JeelizResizer.js");
+  const p2 = loadscript(url+"/helpers/JeelizThreeHelper.js");
+  const p3 = loadscript(url+"/dist/jeelizFaceFilter.js");
+  const p4 = loadscript(url+"/helpers/JeelizThreeGlassesCreator.js");
+  const p5 = loadscript(url+"/libs/three/v112/three.min.js");
+
+  await Promise.all([p1, p2, p3, p4, p5])
+  console.log("************* completed loading all filess *****************");
   
-  JeelizResizer.size_canvas({
-    canvasId: 'jeeFaceFilterCanvas',
-    callback: function(isError, bestVideoSettings){
-      init_faceFilter(bestVideoSettings);
-    }
-  })
+    JeelizResizer.size_canvas({
+      canvasId: 'jeeFaceFilterCanvas',
+      callback: function(isError, bestVideoSettings){
+        init_faceFilter(bestVideoSettings, url);
+      }
+    })
 }
 
-function init_faceFilter(videoSettings){
+
+
+function init_faceFilter(videoSettings, url){
   JEELIZFACEFILTER.init({
     followZRot: true,
     canvasId: 'jeeFaceFilterCanvas',
-    NNCPath: './filter/neuralNets/', // path of NN_DEFAULT.json file
+    NNCPath: url +'/neuralNets/', // path of NN_DEFAULT.json file
     maxFacesDetected: 1,
     callbackReady: function(errCode, spec){
       if (errCode){
@@ -77,7 +102,7 @@ function init_faceFilter(videoSettings){
       }
 
       console.log('INFO: JEELIZFACEFILTER IS READY');
-      init_threeScene(spec);
+      init_threeScene(spec, url);
     },
 
     // called at each render iteration (drawing loop):
