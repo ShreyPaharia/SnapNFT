@@ -12,6 +12,8 @@ import AnchorService from "../anchorServices/anchor.service";
 import { Document, Page } from "react-pdf";
 import aggrementPdf from "./PaymentAggrement.pdf";
 import { useUserAddress } from "eth-hooks";
+import * as Tone from 'tone'
+
 
 
 import { STORAGE, STORAGE_URL, TEXTILE_HUB_BUCKET_NAME } from "../constants";
@@ -36,7 +38,8 @@ export default function SupplierUI({
   constructMediaData,
   sha256FromBuffer,
   userProvider,
-  generateMetadata
+  generateMetadata,
+  ceramicIdx
 }) {
 
   let contracts;
@@ -66,6 +69,8 @@ export default function SupplierUI({
   const [signer, setSigner] = useState(null);
   const [hubId, setHubId] = useState(null);
   const [bucketObj, setBucketObj] = useState(null);
+  const [audiusPlayer, setAudiusPlayer] = useState(null);
+
   const connecTotHub = async () => {
     try {
       let signer1;
@@ -333,6 +338,60 @@ const anchorMenus = (
           }}
           >
           Show Filters
+          </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+          <Button 
+          onClick={async () => {
+            try {
+              if(audiusPlayer!=null) {
+                audiusPlayer.stop()
+              }
+              const player = new Tone.Player({
+                url: "https://creatornode.audius.co/tracks/stream/e4Ybn",//"https://tonejs.github.io/audio/berklee/gurgling_theremin_1.mp3",
+                // loop: true,
+                autostart: true,
+              }).toDestination();
+              setAudiusPlayer(player);
+              // Tone.loaded().then(() => {
+              //   player.start();
+              // });
+
+            } catch (err){
+              console.log(" ERROR  Playing", err);
+
+            }
+          
+          }}
+          >
+          Test Tone
+          </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+          <Button 
+          onClick={async () => {
+            try {
+
+              const oldNotes = await ceramicIdx.get('notesList');
+              await ceramicIdx.set('notesList', {
+                notes: [
+                  ...(oldNotes.notes),
+                  {title:"Post",description:"Post Desc",mediaUrl:"https://fdf5.com",songUrl:"https://audius.com/abcd"},
+                ]
+              })
+
+              // await idx.set('basicProfile', {
+              //   name: 'Alan Turing',
+              //   description: 'I make computers beep good.',
+              //   emoji: '💻',
+              // })
+              const xyz = await ceramicIdx.get('notesList');
+              console.log("notesList",xyz);
+
+            } catch (err){
+              console.log(" ERROR  Playing", err);
+
+            }
+          
+          }}
+          >
+          Test Ceramic Add
           </Button> &nbsp;&nbsp;&nbsp;&nbsp;
         <Button  type="primary"
             onClick={async () => {
