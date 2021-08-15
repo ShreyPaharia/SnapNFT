@@ -185,7 +185,7 @@ const submitOnConfirmation = async () => {
       <div  style={{ border: "1px solid #cccccc", padding: 16, width: 1000, margin: "auto", marginTop: 64, padding: 60 }}>
       <div className="create">
 
-          <div className="create__artwork" >
+          <div className="card__infoValue" >
           <GenericCard
                     key={getRandomIntInclusive}
                     name={title}  

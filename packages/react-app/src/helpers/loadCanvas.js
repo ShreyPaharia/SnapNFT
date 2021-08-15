@@ -23,7 +23,7 @@ const AppCanvas = ({filterSrc, rootPath, ref}) => {
     <div  ref={ref}>
       {loaded ? (
         <>
-          <canvas width="600" height="600" id="jeeFaceFilterCanvas"></canvas>
+          <canvas width="800" height="800" id="jeeFaceFilterCanvas"></canvas>
           <script> main(rootPath); </script>
         </>
       ) : (
