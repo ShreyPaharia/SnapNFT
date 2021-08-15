@@ -543,7 +543,7 @@ function App(props) {
           <Route exact path="/">
           <HomeUI
               name="CashflowTokens"
-              mmAddress={address}
+              zora={zora}
               signer={userProvider.getSigner()}
               provider={localProvider}
               tx={tx}
