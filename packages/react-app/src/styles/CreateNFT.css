@@ -19,9 +19,12 @@
   align-self: center;
 }
 
+.ant-card {
+  /* margin-top: 100px !important; */
+  margin-bottom: 60px !important;
+}
 .create__artwork > img{
 
-  margin-top: 100px;
   width: 80%;
   border-radius: 16px;
 

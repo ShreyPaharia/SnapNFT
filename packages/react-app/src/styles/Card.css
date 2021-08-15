@@ -20,7 +20,7 @@
     position: relative;
 }
 
-.card__infoValueParent{
+.ant-cardParent{
     /* display: flex;
     flex: 1;
     flex-direction: column; */
@@ -70,11 +70,12 @@
 }
 
 
-.card__infoValue{
+.ant-card{
     display: flex;
     flex: 1;
     justify-content: flex-end;
     align-items: center;
+    margin-top: 100px !important;
     /* padding: 4px;
 
     background: rgba( 255, 255, 255, 0.1 );
@@ -85,15 +86,15 @@
     /* border: 1px solid rgba( 255, 255, 255, 0.18 ); */
 }
 
-.card__infoValue > .symbol{
+.ant-card > .symbol{
     font-size: x-large; 
 }
 
-.card__infoValue > h3{
+.ant-card > h3{
     margin: 0px;
 }
 
-.card__infoValue > h4{
+.ant-card > h4{
     margin: 0px 4px;
     font-size: 14px;
     font-weight: 600;
