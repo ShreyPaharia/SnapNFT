@@ -11,7 +11,7 @@
 
 ## Implementation
 
-![image](https://github.com/ShreyPaharia/DeepFinV1/blob/v1_ethodyssey/Flow.png)
+![image](https://github.com/ShreyPaharia/SnapNFT/blob/master/Flow.png)
 
 ## Various blockchain protocol integrations 
 
