@@ -604,6 +604,7 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
               loginUser={loginUser}
+              ceramicIdx={ceramicIdx}
               // cashflowContract={cashflowContract}
               // setCashflowEvents={setCashflowEvents}
             />
@@ -613,6 +614,7 @@ function App(props) {
               signer={userProvider.getSigner()}
               provider={localProvider}
               tx={tx}
+              chainId={targetNetwork.chainId}
               writeContracts={writeContracts}
               readContracts={readContracts}
               address={address}
