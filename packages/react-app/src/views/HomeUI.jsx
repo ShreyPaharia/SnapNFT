@@ -1,22 +1,17 @@
 import { Card, Button, Table } from "antd";
-import React, { useMemo, useState, useCallback } from "react";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { formatEther, parseEther } from "@ethersproject/units";
 import { useContractExistsAtAddress, useContractLoader, useBalance } from "../hooks";
 import Account from "../components/Account";
-import { useEffect } from "react";
+import FilterCard from "./FilterCard"
+import '../styles/Card.css';
+
 const axios = require('axios');
 
-const noContractDisplay = (
-  <div>
-  </div>
-);
-
-const isQueryable = fn => (fn.stateMutability === "view" || fn.stateMutability === "pure") && fn.inputs.length === 0;
 
 export default function HomeUI({
   customContract,
   account,
-  mmAddress,
   gasPrice,
   signer,
   provider,
@@ -28,284 +23,95 @@ export default function HomeUI({
   tx,
   writeContracts,
   readContracts,
+  address,
+  zora,
 }) {
 
-  const [ cfTrans, setCfTrans] = useState([]);
-  const [ totalCFAmt, setTotalCFAmt] = useState([]);
-  const [ usdBalance, setUsdBalance] = useState([]);
-  const contracts = useContractLoader(provider, { chainId });
-  let contract;
-  if (!customContract) {
-    contract = contracts ? contracts[name] : "";
-  } else {
-    contract = customContract;
-  }
+  const [ filterNFT, setFilterNFT] = useState([]);
+  // const [ filterNFT, setFilterNFT] = useState([]);
+  // const [ filterNFT, setFilterNFT] = useState([]);
 
+              const fetchData = async () => {
+                //////NFT Query/////////
+                try{
+                ////Total NFTs owned
+                console.log("********zora address ", address);
+                const balance = (await zora.fetchBalanceOf(address)).toString();
+                console.log("Zora Balance: ",balance);
+                let tokenDataList = [];
 
-  const address = contract ? contract.address : "";
-  const contractIsDeployed = useContractExistsAtAddress(provider, address);
+                //All tokens of USER
+                for(var i=0;i<balance;i++){
 
-  // const getBal = async (contract, address) => {
-  // }
+                  ////Media id of NFT owned
+                  const mediaId = (await zora.fetchMediaOfOwnerByIndex(address,i)).toString();
+                  console.log("Media ",i," :",mediaId);
 
-  const accBalance = useBalance(provider, address);
+                  /////TokenData
+                  const contentHash = (await zora.fetchContentHash(mediaId));
+                  const metadataHash = (await zora.fetchMetadataHash(mediaId));
+                  const contentURI = (await zora.fetchContentURI(mediaId));
+                  const metadataURI = (await zora.fetchMetadataURI(mediaId));
 
+                  const tokenData = {
+                    contentHash : contentHash,
+                    metadataHash: metadataHash,
+                    contentURI  : contentURI,
+                    metadataURI : metadataURI
+                  }
+                  tokenDataList.push(tokenData);
+                  ////
+                }
+                // tokenDataList.map( async (item) => {
+                const nftFilterArr = [];
+                for(let i=0;i<tokenDataList.length; i++){
+                    const item  = tokenDataList[i];
+                  console.log("iteem ->", item);
+                  const metaJsonURL = (item.metadataURI && item.metadataURI.replace("https://ipfs://","https://ipfs.io/ipfs/")) || "";
+                  // const metaJson = await fetch(metaJsonURL);
+                  const metaJson = await (await fetch(metaJsonURL)).json();
 
-  const columns = [
-    {
-      title: 'Token Number',
-      width: 100,
-      dataIndex: 'key',
-      key: 'key',
-      fixed: 'left',
-    },
-    {
-      title: 'Supplier',
-      width: 100,
-      dataIndex: 'Supplier',
-      key: 'Supplier',
-      fixed: 'left',
-    },
-    {
-      title: 'Balance Amt',
-      dataIndex: 'BalanceAmt',
-      key: 'BalanceAmt',
-      width: 150,
-    },
-    {
-      title: 'Repaid',
-      dataIndex: 'isRepaid',
-      key: 'isRepaid',
-      width: 150,
-    },
-    {
-      title: 'Borrow',
-      key: 'operation1',
-      fixed: 'right',
-      width: 100,
-      render: (text, record) => <Button onClick={ async ()=>{
-        console.log(" Borrow Called");
-      }} >Borrow</Button>,
-  },
-    {
-        title: 'Redeem',
-        key: 'operation1',
-        fixed: 'right',
-        width: 100,
-        render: (text, record) => <Button onClick={ async ()=>{
-          console.log(" Redeem for address", mmAddress, record.key, record);
-          const transId = await tx(writeContracts.CashflowTokens.redeem(mmAddress, record.key));
-          console.log("transId", transId);
-          // await usdcToken.approve(cashflowTokens.address,tokens(totalTokenSupply.toString()),{from:anchor});
-          // const transId2 = await tx(writeContracts.USDC.approve(writeContracts.CashflowTokens.address, record.BalanceAmt));
-          // console.log("transId2", transId2);
+                  item.contentURI=(item.contentURI && item.contentURI.split("_")[0])||"";
+                  item.metadataURI=metaJson;
+                  item.imageURL = (( metaJson.image && metaJson.image.replace("ipfs://","https://ipfs.io/ipfs/")) || "");
+                  // console.log("iteem2 ->", item);
+                  // return item;
+                  tokenDataList[i] = item;
+                  // nftFilterArr.push(item)
+                  }
+                // });
+                setFilterNFT(tokenDataList);
+                console.log("tokenDataList, ", tokenDataList);
+                /////NFT Query/////////
 
-          // setRecordKey(record.key);
-          // setVisible(true);
-        }} >Redeem</Button>,
-    },
-    {
-        title: 'Transfer',
-        key: 'operation2',
-        fixed: 'right',
-        width: 100,
-        render: (text, record) => <Button onClick={ async ()=>{
-          console.log(" Transfer ", record);
-          // cashflow token tranfer
+                } catch(err){
+                  console.log(" ERROR : ", err);
 
-          // setRecordKey(record.key);
-          // setVisible(true);
-        }} >Transfer</Button>,
+                }
+        };
+
+    useEffect(() => {
+      setTimeout(() => {
+
+      }, 2000);
+
+      if(address){
+        fetchData()
       }
-  ];
+  },[address]);
 
-  // const logTokens = async ( cToken )=> {
-
-  //   var lastTokenId = await cToken.methods.lastTokenId().call();
-  //   let uri = await cToken.methods.uri(lastTokenId).call();
-
-  //   var tokenList = []
-
-  //   for (var tokenId=1 ;tokenId<=lastTokenId; tokenId++){
-  //     var tokenBalanceDict = {}
-  //     var balance = await cToken.methods.balanceOf(account,tokenId).call();
-  //     if(balance>0){
-  //       let tokenUri = uri.replace("{id}",tokenId);
-
-  //       await axios.get(tokenUri).then((res)=>{
-  //         tokenBalanceDict["tokenId"] = tokenId;
-  //         // tokenBalanceDict["balance"] = this.toEtherFromWei(balance);
-  //         tokenBalanceDict["details"] = res.data;
-  //         tokenList.push(tokenBalanceDict);
-  //       }).catch((res)=>console.log(res))
-  //     }
-  //   }
-
-  //   console.log("------Token Log Starts-----")
-  //   console.log("Total Tokens: "+(lastTokenId))
-  //   console.log("Total Token Balances:-");
-  //   console.log(tokenList)
-  //   this.setState({ loading: false })
-  // }
-
-  // string public name = "Cashflow Tokens";
-  // string public symbol = "cToken";
-  // uint256 public lastTokenId;
-  // USDC public usdcToken;
-  // address public owner;
-  // mapping (uint256 => uint256) public totalSupply;
-  // mapping (uint256 => bool) public isRepaid;
-  // mapping (uint256 => TokenMetaData) public tokenMetaData;
-  const displayLogs = async (contract) => {
-
-    const getField = async (contract, field, ...params) => {
-      console.log(contract.functions && contract.functions[field] && await contract.functions[field](...params));
-
-    }
-    let balance =  null;
-    if(name == "CashflowTokens"){
-      // if()
-        try{
-          const result = await contract.getAllTransactions();
-          // console.log("*******mmAddress",mmAddress)
-          // console.log("*********account", account)
-          const resultBal = await contract.getAllBalances(mmAddress);
-          const resultBalEther = resultBal.map(x=>formatEther(x.toString()));
-
-          // console.log(" *********result ", result);
-          // console.log(" *********result balance", resultBalEther)
-          const tempArr = [];
-          let totalCFToken = 0;
-          result.forEach( (item, idx) => {
-            // if(!item['isRepaid'] && item['totalSupply'].toNumber()>0){
-              if(idx!=0 && resultBalEther[idx]>0){
-              // totalCFToken+=formatEther(['totalSupply'].toString());
-              // console.log("******repaid => "+item['isRepaid'])
-              tempArr.push({
-                key: idx,
-                Supplier: item['supplier'].substr(0, 6),
-                status: item["status"],
-                BalanceAmt: resultBalEther[idx],
-                isRepaid: item['isRepaid']?"Yes":"No",
-              })
-            }
-            // }
-          })
-          setCfTrans(tempArr);
-          setTotalCFAmt(totalCFToken);
-
-        } catch(err){
-          console.log(" ERROR ", err);
-        }
-    } else if ( name =="USDC"){
-          const res = contract.balanceOf && await contract.balanceOf(address)
-          setUsdBalance(res && res.toNumber());
-          console.log(" USDC Total ", res && res.toNumber());
-    }
-  }
-
-  useEffect(()=>{
-    displayLogs(contract);
-
-  }, [contract,mmAddress])
-  // if(contract.balanceOfBatch){
-
-  // }
-
-  const displayedContractFunctions = useMemo(
-    () =>
-      contract
-        ? Object.values(contract.interface.functions).filter(
-            fn => fn.type === "function" && !(show && show.indexOf(fn.name) < 0),
-          )
-        : [],
-    [contract, show],
-  );
-
-  // const refresh = useCallback(async () => {
-  //   try {
-  //     const funcResponse = await contract[fn.name]();
-  //     console.log("funcResponse", funcResponse);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // }, []);
-
-  const mintCToken = async () => {
-    if(name == "CashflowTokens"){
-      console.log(" !!!!!!!!!!!!!!!contract ", name, contract);
-    }
-  }
-
-  // const [refreshRequired, triggerRefresh] = useState(false);
-  const contractDisplay = ""
-  // const contractDisplay = displayedContractFunctions.map(fn => {
-  //   if (isQueryable(fn)) {
-  //     // If there are no inputs, just display return value
-  //     return (
-  //       <DisplayVariable
-  //         key={fn.name}
-  //         contractFunction={contract[fn.name]}
-  //         functionInfo={fn}
-  //         refreshRequired={refreshRequired}
-  //         triggerRefresh={triggerRefresh}
-  //       />
-  //     );
-  //   }
-  //   // If there are inputs, display a form to allow users to provide these
-  //   return (
-  //     <></>
-  //     // <FunctionForm
-  //     //   key={"FF" + fn.name}
-  //     //   contractFunction={
-  //     //     fn.stateMutability === "view" || fn.stateMutability === "pure"
-  //     //       ? contract[fn.name]
-  //     //       : contract.connect(signer)[fn.name]
-  //     //   }
-  //     //   functionInfo={fn}
-  //     //   provider={provider}
-  //     //   gasPrice={gasPrice}
-  //     //   triggerRefresh={triggerRefresh}
-  //     // />
-  //   );
-  // });
-   const cashFlowTable =  <Table
-                            columns={columns}
-                            dataSource={cfTrans}
-                            bordered
-                            title={() => ''}
-                            footer={() => `Grand Total ${totalCFAmt}`}
-                          />;
-    // const usdcComp  = ({usdBalance}<div>);
 
   return (
-    <div style={{ margin: "auto", width: "70vw" }}>
-      <Card
-        title={
-          <div>
-            {name}
-            <div style={{ float: "right" }}>
-              <Account
-                address={address}
-                localProvider={provider}
-                injectedProvider={provider}
-                mainnetProvider={provider}
-                price={price}
-                blockExplorer={blockExplorer}
-              />
-              {account}
-            </div>
-          </div>
-        }
-        size="large"
-        style={{ marginTop: 25, width: "100%" }}
-        loading={contractDisplay && contractDisplay.length <= 0}
-      >
-        {/* {contractIsDeployed ? contractDisplay : noContractDisplay}
-        { name=="CashflowTokens" && cashFlowTable} */}
-        {/* { name=="USDC" && usdBalance} */}
-
-      </Card>
-    </div>
+    <div  style={{ border: "1px solid #cccccc", padding: 16, width: 1000, margin: "auto", marginTop: 64, padding: 60 }}>
+      <div className="market">
+      {filterNFT && filterNFT.map((nft) => (
+                    <FilterCard
+                    key={nft.contentHash}
+                    nft={nft}
+                    />
+                ))
+                }
+      </div>
+        </div>
   );
 }

@@ -17,6 +17,7 @@ import * as Tone from 'tone'
 
 
 import { STORAGE, STORAGE_URL, TEXTILE_HUB_BUCKET_NAME } from "../constants";
+const { TextArea } = Input;
 
 
 export default function SupplierUI({
@@ -61,7 +62,8 @@ export default function SupplierUI({
   const [allowLiveStream, setAllowLiveStream] = useState("");
   const [walletTo, setWalletTo] = useState("");
 
-  const [anchors, setAnchors] = useState([]);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [fileList, setFileList] = useState([]);
   const [filters, setFilters] = useState([]);
   const [filterSrc, setFilterSrc] = useState("");
@@ -91,64 +93,83 @@ export default function SupplierUI({
 
     }
 
-  // useEffect(async () => {
-  //   // await getBucketKey()
-  //   connecTotHub();
-  //   }, []);
+    function getRandomIntInclusive(min=1, max=1000) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+    }
 
+  const mintNFT = async () => {
 
-//   useEffect( async () => {
-//   AnchorService.getAnchorList().then( res => {
-//     console.log("AnchorService.getAnchorList ", res);
-//     setAnchors(res.data)
-//     setAnchorList(res.data)
-//   })
-// }, [])
+    try{
+          const filterName = localStorage.getItem('path');
+          //NFT Minting///////
+        const metadataJSON = generateMetadata('zora-20210101', {
+          description: '',
+          mimeType: 'text/plain',
+          name: filterName || '',
+          version: 'zora-20210101',
+        })
+
+        const imageUrl = STORAGE_URL+`${ipfsHash}`;
+        const imgData = await fetch(imageUrl);
+        const imgBlob = await imgData.blob();
+
+        const metaData = await uploadNFTStorage({
+          name: title || filterName || '',
+          version:'1',
+          description: description || '',
+          image: new File([imgBlob], 'nftLogo.jpg', { type: 'image/jpg' }) //Required - Can be used for LOGO
+
+        })
+        console.log("metaData", metaData)
+
+        const bucketO = await connecTotHub();
+        const links = await logLinks(bucketO.buckets, bucketO.bucketKey);
+        const contentUrl = `${links.url}/${filterName}_${getRandomIntInclusive()}`;
+        console.log("*************** contentUrl ", contentUrl)
+        const metaDataUrlUpdated = 'https://'+metaData.url;
+        const contentHash = sha256FromBuffer(Buffer.from(contentUrl))
+        const metadataHash = sha256FromBuffer(Buffer.from(metaDataUrlUpdated))
+        const mediaData = constructMediaData(
+          contentUrl,
+          // 'https://ipfs.io/ipfs/bafybeifyqibqlheu7ij7fwdex4y2pw2wo7eaw2z6lec5zhbxu3cvxul6h4',
+          metaDataUrlUpdated,
+          contentHash,
+          metadataHash
+          // ,
+          // amount,
+          // numberTokens,
+          // percentageToCreator,
+          // allowLiveStream
+          )
+        console.log(" mediaData ", mediaData);
+
+        const bidShares = constructBidShares(
+          parseInt(percentageToCreator), // creator share
+          100 - parseInt(percentageToCreator), // owner share
+          // 10, // creator share
+          // 90, // owner share
+          0 // prevOwner share
+        )
+        const tx = await zora.mint(mediaData, bidShares)
+        // zora.setAsk(media, amt)
+        await tx.wait(8) // 8 confirmations to finalize
+
+        console.log("zNFT Minted:",tx)
+        ////NFT Minting/////////
+
+    }catch( err){
+      console.log(" ERROR ", err);
+
+    }
+  }
 
 const submitOnConfirmation = async () => {
-
-  console.log("anchor ", anchor);
-
-  const anchorS = anchorList && anchorList.find(item => item.value === anchor);
-  const selectedAnchor = anchorS && anchorS.key;
-
-  console.log(" supplier contract values  ", address, paymentDate, selectedAnchor, parseEther("" +amount), ipfsHash, writeContracts);
-  console.log("***selectedAnchor", selectedAnchor);
-  console.log("MultiSigWallet ", writeContracts.MultiSigWallet);
-
-  // let supplier = await tx(writeContracts.MultiSigWallet.suppliers(0));
-  // console.log(" supplier ", supplier);
-
-  // const supplier = await writeContracts.MultiSigWallet.suppliers(0);
-  // if(!supplier) {
-  //   console.log(" Adding supplier");
-  //   supplier = await tx(writeContracts.MultiSigWallet.addSupplier(address));
-  //   const checkSupplier = await tx(writeContracts.MultiSigWallet.suppliers());
-  //   console.log(" added supplier ", supplier, checkSupplier);
-  //   console.log(" added supplier ", supplier);
-  // }
-  // if(supplier){
-    console.log(writeContracts);
-    const transId = await tx(writeContracts.MultiSigWallet.submitTransaction(ipfsHash, ipfsHash, selectedAnchor, parseEther("" +amount), paymentDate));
-    console.log("transId", transId);
-    // const newTrx = await tx(readContracts.MultiSigWallet.getConfirmationCount(transId.hash));
-    // console.log(" newTrx ", newTrx);
-  // }
+    mintNFT();
 
 }
 
-const anchorMenus = (
-    <Menu onClick={e => {
-      // console.log(" in anchorMenu", e);
-      const newSelected = anchors && anchors.find(item => item.key === e.key);
-      console.log("newSelected", newSelected && newSelected.key);
-      setAnchor(newSelected && newSelected.value);
-    }}>
-      {anchors && anchors.map(item => (
-        <Menu.Item key={item.key}  icon={<UserOutlined />}>{item.value}</Menu.Item>
-      ))}
-    </Menu>
-  );
   return (
     <div>
       {/*
@@ -163,10 +184,23 @@ const anchorMenus = (
         </div>
 
         <div style={{ margin: '24px 0'}} />
-        {/* { if(ipfsHash) { */}
-            <img src={STORAGE_URL+`${ipfsHash}`} alt="" align="middle"/>
-          {/* }
-        } */}
+        <Input placeholder="Title" allowClear 
+                onChange={e => {
+                  setTitle(e.target && e.target.value);
+                }}
+         />
+
+        <div style={{ margin: '24px 0'}} />
+        <TextArea placeholder="Description" allowClear 
+                onChange={e => {
+                  setDescription(e.target && e.target.value);
+                }}
+         />
+
+        <div style={{ margin: '24px 0'}} />
+        {
+            ipfsHash? <img src={STORAGE_URL+`${ipfsHash}`} alt="" align="middle" width="300" height="300"/> :<></>
+        }
         <Upload.Dragger name="logo_files" action="/upload.do"
           onChange={ async (e) => {
             // e.preventDefault()
@@ -214,45 +248,6 @@ const anchorMenus = (
         <Upload name="directory" action="/upload.do"
           onChange={ async (e) => {
             setFileList(e && e.fileList);
-            // e.preventDefault()
-          //  try {
-          //   await connecTotHub();
-          //   // const textHubId = createIdentity(signer, address);
-          //   const bucket = await getOrCreateBucket(TEXTILE_HUB_BUCKET_NAME, signer, address);
-          //   console.log(" ********* bucket ", bucket);
-          //  } catch (err){
-          //    console.log(" ERROR ", err);
-             
-          //  }  
-            
-            // console.log(" ****** upload event ", e);
-            // const file = e.fileList[0] && e.fileList[0].originFileObj;
-            // const reader = new window.FileReader()
-            // reader.readAsArrayBuffer(file)
-            // reader.onloadend = async () => {
-            //   const buff = Buffer(reader.result);
-            //   setBuffer(buff);
-            //   // console.log('buffer', buff);
-            //   if(STORAGE==="IPFS"){
-            //     Ipfs.files.add(buff, (error, result) => {
-            //       if(error) {
-            //         console.error(error)
-            //         return
-            //       }
-            //       console.log(" ipfs Hash ", result[0] && result[0].hash);
-            //       setIpfsHash(result[0] && result[0].hash);
-            //     })
-            //   } else if (STORAGE=="FILECOIN"){
-            //     const response = await Slate(file)
-            //     if(response.decorator!=="V1_UPLOAD_TO_SLATE"){
-            //       console.log("ERROR IN UPLOAD",response);
-            //     } else {
-            //       setIpfsHash(response && response.data.cid);
-            //       console.log("UPLOAD DONE:    ", response)
-            //     }
-                
-            //   }
-            // }
         }}
         directory>
           <Button icon={<UploadOutlined />}>Upload Directory</Button>
@@ -314,19 +309,19 @@ const anchorMenus = (
               console.log(" ERROR  uploading", err);
 
             }
-          
+
           }}
           >
           Upload
           </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-          <Button 
+          <Button
           onClick={async () => {
             try {
               const bucketO = await connecTotHub();
               await logLinks(bucketO.buckets, bucketO.bucketKey);
               // console.log(" files to bucketObj ", bucketO);
               console.log(" localStorage.getItem(path) ->", localStorage.getItem("path"));
-              
+
               const filterArr = await pullFile(bucketO.buckets, bucketO.bucketKey, localStorage.getItem("path"));
               console.log(" filterArr ", filterArr);
               setFilters(filterArr);
@@ -334,7 +329,7 @@ const anchorMenus = (
               console.log(" ERROR  uploading", err);
 
             }
-          
+
           }}
           >
           Show Filters
@@ -406,82 +401,10 @@ const anchorMenus = (
 
 
 
-              // //////NFT Query/////////
-
-              // ////Total NFTs owned
-              // const balance = (await zora.fetchBalanceOf(address)).toString();
-              // console.log("Zora Balance: ",balance);
-              // let tokenDataList = [];
-
-              // ////All tokens of USER
-              // for(var i=0;i<balance;i++){
-
-              //   ////Media id of NFT owned
-              //   const mediaId = (await zora.fetchMediaOfOwnerByIndex(address,i)).toString();
-              //   console.log("Media ",i," :",mediaId);
-
-              //   /////TokenData
-              //   const contentHash = (await zora.fetchContentHash(mediaId));
-              //   const metadataHash = (await zora.fetchMetadataHash(mediaId));
-              //   const contentURI = (await zora.fetchContentURI(mediaId));
-              //   const metadataURI = (await zora.fetchMetadataURI(mediaId));
-
-
-              //   const tokenData = {
-              //     contentHash : contentHash,
-              //     metadataHash: metadataHash,
-              //     contentURI  : contentURI,
-              //     metadataURI : metadataURI
-              //   }
-              //   tokenDataList.push(tokenData);
-              //   ////
-              // }
-
-              // console.log(tokenDataList);
-
-              // ///////NFT Query/////////
 
 
 
 
-              ////NFT Minting///////
-              // const metadataJSON = generateMetadata('zora-20210101', {
-              //   description: '',
-              //   mimeType: 'text/plain',
-              //   name: '',
-              //   version: 'zora-20210101',
-              // })
-
-              // const metaData = await uploadNFTStorage({
-              //   name:'Token', //Required
-              //   version:'1',
-              //   description:'TokenAsset', //Required
-              //   image: new File([/* data */], 'pinpie.jpg', { type: 'image/jpg' }) //Required - Can be used for LOGO
-
-              // })
-              // console.log(metaData)
-              
-              // const metaDataUrlUpdated = 'https://'+metaData.url;
-              // const contentHash = sha256FromBuffer(Buffer.from('Ours123 Truly,'))
-              // const metadataHash = sha256FromBuffer(Buffer.from(metaDataUrlUpdated))
-              // const mediaData = constructMediaData(
-              //   'https://ipfs.io/ipfs/bafybeifyqibqlheu7ij7fwdex4y2pw2wo7eaw2z6lec5zhbxu3cvxul6h4',
-              //   metaDataUrlUpdated,
-              //   contentHash,
-              //   metadataHash
-              // )
-
-              // const bidShares = constructBidShares(
-              //   10, // creator share
-              //   90, // owner share
-              //   0 // prevOwner share
-              // )
-              // const tx = await zora.mint(mediaData, bidShares)
-              // await tx.wait(8) // 8 confirmations to finalize
-
-              // console.log("zNFT Minted:",tx)
-              //////NFT Minting/////////
-              
               setVisible(true);
             }}
           >

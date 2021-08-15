@@ -61,6 +61,7 @@ const { ethers } = require("ethers");
 /// 📡 What chain are your contracts deployed to?
 // const targetNetwork = NETWORKS.kovan; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 const targetNetwork = NETWORKS.mumbai; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+// const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console llocalhostogging
 const DEBUG = true;
@@ -543,7 +544,7 @@ function App(props) {
           <Route exact path="/">
           <HomeUI
               name="CashflowTokens"
-              mmAddress={address}
+              zora={zora}
               signer={userProvider.getSigner()}
               provider={localProvider}
               tx={tx}
