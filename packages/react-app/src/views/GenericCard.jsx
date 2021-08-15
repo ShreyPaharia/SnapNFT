@@ -19,6 +19,22 @@ function GenericCard({ name,  description, imageURL, callBack}) {
         >
             <Meta title={name} description={description} />
         </Card>
+        <Modal
+              title={name}
+              centered
+              visible={visible}
+              onOk={() => { 
+                      }}
+              onCancel={() =>{
+                setVisible(false)
+            } }
+              okText="Save"
+              cancelText="Cancel"
+              width={1000}>
+                    <canvas width="800" height="800" id='genericCanvass'></canvas>
+
+          </Modal>
+
         </div>
         )
 }

@@ -16,6 +16,7 @@ import * as Tone from 'tone'
 // import { useScreenshot } from 'use-react-screenshot'
 import FilterCard from "./FilterCard";
 import '../styles/CreateNFT.css'
+import GenericCard from "./GenericCard"
 
 
 
@@ -185,10 +186,12 @@ const submitOnConfirmation = async () => {
       <div className="create">
 
           <div className="create__artwork" >
-          {/* <FilterCard
-                    key={nft.contentHash}
-                    nft={{}}
-                    /> */}
+          <GenericCard
+                    key={getRandomIntInclusive}
+                    name={title}  
+                    description={description} 
+                    imageURL={STORAGE_URL+`${ipfsHash}`}
+                    /> 
         </div>
           <div className="create__details">
           <h1> Create your own filter</h1>
