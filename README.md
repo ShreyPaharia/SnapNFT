@@ -3,9 +3,11 @@
 <p  align="center">An AR Filter NFT Marketplace! 🚀</p>
 
 ## Motivation
+
     It stemmed from the idea of selling code using NFTs. What if people could build websites in a decentralised manner? Here every feature could be built and sold by anyone as an NFT, which can be purchased to use it. To build a proof of concept of this we decided to build AR Filters on NFT.
 
 ## Solution
+
     We are building a decetralised solution to create and sell AR Filters as NFTs. People can use these AR Filters to take pictures and videos and post it directly on our platform. 
     On minting a new AR Filter NFT, files are stored onto decentralised storage along with the NFT metadata. Then they can add an ask to the NFT or start an NFT auction. People can buy these NFTs to use these novel AR Filters. Users can also click pictures and post it directly on the platform which are stored in their own buckets.
 
