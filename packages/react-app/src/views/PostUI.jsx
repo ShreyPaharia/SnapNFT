@@ -16,6 +16,7 @@ export default function PostUI({
   chainId,
   writeContracts,
   readContracts,
+  ceramicIdx
 }) {
   const [postItems, setPostItems] = useState([]);
   const fetchData = async () => {
@@ -23,8 +24,13 @@ export default function PostUI({
     // on LOAD Query
     /////NFT Query/////////
     try{
-
-      setPostItems([])
+      const oldNotes = (await ceramicIdx.get('notesList'))|| {notes:[]};
+      let items = oldNotes.notes;
+      for(let i=0; i<items.length; i++){
+        items[i].key = i;
+      }
+      // console.log(items)
+      setPostItems(items)
     } catch(err){
       console.log(" ERROR : ", err);
     }
@@ -36,7 +42,7 @@ setTimeout(() => {
 }, 2000);
 
 fetchData()
-},[]);
+},[ceramicIdx]);
 
 
   return(
@@ -45,8 +51,11 @@ fetchData()
       <div className="market">
       {postItems && postItems.map((postItem) => (
                     <GenericCard
-                    key={postItem.id}
-                    postItem={postItem}
+                    key={postItem.key}
+                    name={postItem.name}  
+                    description={postItem.description} 
+                    imageURL={postItem.imageURL}
+                    songURL={postItem.songURL}
                     />
                 ))
                 }

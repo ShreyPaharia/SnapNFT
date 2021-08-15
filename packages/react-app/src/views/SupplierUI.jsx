@@ -374,11 +374,11 @@ const submitOnConfirmation = async () => {
           onClick={async () => {
             try {
 
-              const oldNotes = (await ceramicIdx.get('notesList'))|| {notes:[]};
+              const oldNotes = /*(await ceramicIdx.get('notesList'))|| */{notes:[]};
               await ceramicIdx.set('notesList', {
                 notes: [
                   ...(oldNotes.notes),
-                  {title:"Post",description:"Post Desc",mediaUrl:"https://fdf5.com",songUrl:"https://audius.com/abcd"},
+                  {name:"Post",description:"Post Desc",imageURL:"https://freepngimg.com/thumb/mario/20723-2-mario-image.png",songURL:"https://creatornode.audius.co/tracks/stream/e4Ybn"},
                 ]
               })
 
