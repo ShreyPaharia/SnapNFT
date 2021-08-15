@@ -115,16 +115,16 @@ export const getIdentity = async (signer, address) => {
      * If any error, create a new identity.
      */
     try {
-      // const textHubId = await createIdentity(signer, address);
-      // const identity = textHubId;
-      // if(identity){
-      //   const identityString = identity.toString();
-      //   localStorage.setItem("identity", identityString);
-      // }
-      const identity = PrivateKey.fromRandom()
-      const identityString = identity.toString()
-      localStorage.setItem("identity", identityString)
-      return identity
+      const textHubId = await createIdentity(signer, address);
+      const identity = textHubId;
+      if(identity){
+        const identityString = identity.toString();
+        localStorage.setItem("identity", identityString);
+      }
+      // const identity = PrivateKey.fromRandom()
+      // const identityString = identity.toString()
+      // localStorage.setItem("identity", identityString)
+      // return identity
     // return identity;
     } catch (err) {
       console.log(" ERROR ", err);

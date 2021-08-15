@@ -1,8 +1,8 @@
 export { default as SupplierUI } from "./SupplierUI";
-export { default as AnchorUI } from "./AnchorUI";
+export { default as PostUI } from "./PostUI";
 export { default as LoginUI } from "./LoginUI";
 export { default as RegisterUI } from "./RegisterUI";
-export { default as HistoryUI } from "./HistoryUI";
+export { default as OtherNFTS } from "./OtherNFTs";
 export { default as Hints } from "./Hints";
 export { default as Subgraph } from "./Subgraph";
 export { default as ExampleUI } from "./ExampleUI";

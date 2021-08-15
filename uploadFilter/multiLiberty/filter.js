@@ -101,8 +101,10 @@ async function main(url){
   const p3 = loadscript(url+"/dist/jeelizFaceFilter.js");
   const p4 = loadscript(url+"/helpers/JeelizThreeGlassesCreator.js");
   const p5 = loadscript(url+"/libs/three/v112/three.min.js");
+  const p6 = loadscript(url+"/libs/tween/v16_3_5/Tween.min.js");
+  const p7 = loadscript(url+"/libs/three/v97/three.min.js");
 
-  await Promise.all([p1, p2, p3, p4, p5])
+  await Promise.all([p1, p2, p3, p4, p5, p6])
   console.log("************* completed loading all filess *****************");
   
   JEELIZFACEFILTER.init({

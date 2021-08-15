@@ -4,7 +4,7 @@ import { SyncOutlined } from "@ant-design/icons";
 import { formatEther, parseEther } from "@ethersproject/units";
 import { Card, Button, Modal, DatePicker, Divider, Input, Popconfirm, Progress, Slider, Spin, Switch, AutoComplete, Space, Select, Radio, Form, Menu, Dropdown, Upload } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone, UserOutlined, DownOutlined, UploadOutlined, InboxOutlined } from '@ant-design/icons';
-import React, { useState, useEffect } from "react";
+import React, { useState, createRef } from "react";
 import {Ipfs, Slate, AppCanvas, uploadNFTStorage} from "../helpers"
 import { getIdentity, getOrCreateBucket, pushAllFile, getFilters, pushAllFile2, pullFile, logLinks} from "./../textileHubUtil"
 import { getBucketKey } from "./../textileHubUtill2"
@@ -13,6 +13,9 @@ import { Document, Page } from "react-pdf";
 import aggrementPdf from "./PaymentAggrement.pdf";
 import { useUserAddress } from "eth-hooks";
 import * as Tone from 'tone'
+// import { useScreenshot } from 'use-react-screenshot'
+import FilterCard from "./FilterCard";
+import '../styles/CreateNFT.css'
 
 
 
@@ -53,13 +56,13 @@ export default function SupplierUI({
   const [anchor, setAnchor] = useState("Select Anchor from the list");
   const [amount, setAmount] = useState("");
   const [ethPrice, setEthPrice] = useState("");
+  const [maticPrice, setMaticPrice] = useState("");
   const [ipfsHash, setIpfsHash] = useState("");
   const [hubBucket, setHubBucket] = useState("");
   const [buffer, setBuffer] = useState();
   const [visible, setVisible] = useState(false);
-  const [numberTokens, setNumberTokens] = useState(null);
+  const [percentageToPrevOwner, setPercentageToPrevOwner] = useState(null);
   const [percentageToCreator, setPercentageToCreator] = useState("");
-  const [allowLiveStream, setAllowLiveStream] = useState("");
   const [walletTo, setWalletTo] = useState("");
 
   const [title, setTitle] = useState("");
@@ -72,6 +75,10 @@ export default function SupplierUI({
   const [hubId, setHubId] = useState(null);
   const [bucketObj, setBucketObj] = useState(null);
   const [audiusPlayer, setAudiusPlayer] = useState(null);
+  // const [image, takeScreenShot] = useScreenshot();
+  const ref = createRef(null);
+  // const getImage = () => takeScreenShot(ref.current);
+
 
   const connecTotHub = async () => {
     try {
@@ -105,12 +112,12 @@ export default function SupplierUI({
     try{
           const filterName = localStorage.getItem('path');
           //NFT Minting///////
-        const metadataJSON = generateMetadata('zora-20210101', {
-          description: '',
-          mimeType: 'text/plain',
-          name: filterName || '',
-          version: 'zora-20210101',
-        })
+        // const metadataJSON = generateMetadata('zora-20210101', {
+        //   description: '',
+        //   mimeType: 'text/plain',
+        //   name: filterName || '',
+        //   version: 'zora-20210101',
+        // })
 
         const imageUrl = STORAGE_URL+`${ipfsHash}`;
         const imgData = await fetch(imageUrl);
@@ -120,8 +127,8 @@ export default function SupplierUI({
           name: title || filterName || '',
           version:'1',
           description: description || '',
-          image: new File([imgBlob], 'nftLogo.jpg', { type: 'image/jpg' }) //Required - Can be used for LOGO
-
+          image: new File([imgBlob], 'nftLogo.jpg', { type: 'image/jpg' }), //Required - Can be used for LOGO
+          type: 'SNAP_NFT'
         })
         console.log("metaData", metaData)
 
@@ -140,18 +147,16 @@ export default function SupplierUI({
           metadataHash
           // ,
           // amount,
-          // numberTokens,
           // percentageToCreator,
-          // allowLiveStream
           )
         console.log(" mediaData ", mediaData);
 
         const bidShares = constructBidShares(
           parseInt(percentageToCreator), // creator share
-          100 - parseInt(percentageToCreator), // owner share
+          100 - parseInt(percentageToCreator) - parseInt(percentageToPrevOwner), // owner share
           // 10, // creator share
           // 90, // owner share
-          0 // prevOwner share
+          parseInt(percentageToPrevOwner) // prevOwner share
         )
         const tx = await zora.mint(mediaData, bidShares)
         // zora.setAsk(media, amt)
@@ -177,7 +182,16 @@ const submitOnConfirmation = async () => {
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
       <div  style={{ border: "1px solid #cccccc", padding: 16, width: 1000, margin: "auto", marginTop: 64, padding: 60 }}>
-        <h1> Create your own filter</h1>
+      <div className="create">
+
+          <div className="create__artwork" >
+          {/* <FilterCard
+                    key={nft.contentHash}
+                    nft={{}}
+                    /> */}
+        </div>
+          <div className="create__details">
+          <h1> Create your own filter</h1>
         <Divider />
         <div align="left" style={{ margin: 8 }}>
         <div style={{ margin: '24px 0' }} />
@@ -199,10 +213,8 @@ const submitOnConfirmation = async () => {
          />
 
         <div style={{ margin: '24px 0'}} />
-        {
-            ipfsHash? <img src={STORAGE_URL+`${ipfsHash}`} alt="" align="middle" width="300" height="300"/> :<></>
-        }
-        <Upload.Dragger name="logo_files" action="/upload.do"
+
+        <Upload.Dragger name="logo_files"
           onChange={ async (e) => {
             // e.preventDefault()
             console.log(" upload event ", e);
@@ -230,7 +242,7 @@ const submitOnConfirmation = async () => {
                   setIpfsHash(response && response.data.cid);
                   console.log("UPLOAD DONE:    ", response)
                 }
-                
+
               }
             }
         }}
@@ -246,7 +258,7 @@ const submitOnConfirmation = async () => {
 
         <div style={{ margin: '24px 0' }} />
 
-        <Upload name="directory" action="/upload.do"
+        <Upload name="directory" showUploadList="false"
           onChange={ async (e) => {
             setFileList(e && e.fileList);
         }}
@@ -265,29 +277,22 @@ const submitOnConfirmation = async () => {
           />
         <div style={{ margin: '24px 0' }} />
 
-      <Input addonBefore="#"
-        placeholder="Number of tokens"
-        autoComplete="off"
-        onChange={e => {
-          setNumberTokens(e.target && e.target.value);
-        }}
-      />
+        <Input addonBefore="%"
+          placeholder="Percentage to creator"
+          autoComplete="off"
+          onChange={e => {
+            setPercentageToCreator(e.target && e.target.value);
+          }}
+        />
     <div style={{ margin: '24px 0' }} />
 
     <Input addonBefore="%"
-      placeholder="Percentage to creator"
+      placeholder="Percentage to previous owner"
       autoComplete="off"
       onChange={e => {
-        setPercentageToCreator(e.target && e.target.value);
+        setPercentageToPrevOwner(e.target && e.target.value);
       }}
     />
-
-      <div style={{ margin: '24px 0' }} />
-
-          <Switch checkedChildren="Allowed for Live Stream" unCheckedChildren="Live Stream not allowed" defaultChecked       onChange={e => {
-        setAllowLiveStream(e.target && e.target.value);
-        }}
-      />
 
         {/* </Input.Group> */}
         </div>
@@ -306,6 +311,8 @@ const submitOnConfirmation = async () => {
               await pushAllFile2(fileList, bucketO.buckets, bucketO.bucketKey);
               const links = await logLinks(bucketO.buckets, bucketO.bucketKey);
               setHubBucket(links);
+
+
             } catch (err){
               console.log(" ERROR  uploading", err);
 
@@ -364,7 +371,7 @@ const submitOnConfirmation = async () => {
           onClick={async () => {
             try {
 
-              const oldNotes = await ceramicIdx.get('notesList');
+              const oldNotes = (await ceramicIdx.get('notesList'))|| {notes:[]};
               await ceramicIdx.set('notesList', {
                 notes: [
                   ...(oldNotes.notes),
@@ -391,15 +398,18 @@ const submitOnConfirmation = async () => {
           </Button> &nbsp;&nbsp;&nbsp;&nbsp;
         <Button  type="primary"
             onClick={async () => {
+              const priceEth = await tx(readContracts.PriceConsumerV3.ethPrice());
+              setEthPrice(priceEth);
+              const priceMatic = await tx(readContracts.PriceConsumerV3.maticPrice());
+              setMaticPrice(priceMatic);
+
               const bucketO = await connecTotHub();
               const links = await logLinks(bucketO.buckets, bucketO.bucketKey);
               const src = links.url+"/"+localStorage.getItem("path");
               setFilterSrc(src)
 
    
-              // const price = await tx(readContracts.PriceConsumerV3.ethPrice());
-              // setEthPrice(price);
-
+          
 
 
 
@@ -422,7 +432,7 @@ const submitOnConfirmation = async () => {
               okText="Submit"
               // cancelText="Ciao"
               width={1000}>
-                <AppCanvas filterSrc={`${filterSrc}/filter.js`} rootPath={`${filterSrc}`}></AppCanvas>
+                <AppCanvas filterSrc={`${filterSrc}/filter.js`} rootPath={`${filterSrc}`} ></AppCanvas>
                 {/* {STORAGE_URL+`${ipfsHash}`} */}
             {/* <Document
               file={aggrementPdf}
@@ -482,6 +492,8 @@ const submitOnConfirmation = async () => {
           >
             Transfer Wallet
           </Button> */}
+        </div>
+        </div>
         </div>
     </div>
   );

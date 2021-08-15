@@ -14,7 +14,6 @@ import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor,authenticateCeramic } from "./helpers";
 import { createIdentity, getIdentity } from "./textileHubUtil";
 
-
 import { Zora, 
   constructBidShares,
   constructMediaData,
@@ -35,7 +34,7 @@ import {
 } from "./hooks";
 import AuthService from "./authServices/auth.service";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph, SupplierUI, AnchorUI, LoginUI, RegisterUI, HistoryUI, HomeUI, DepositUI } from "./views";
+import { ExampleUI, Hints, Subgraph, SupplierUI, PostUI, LoginUI, RegisterUI, OtherNFTS, HomeUI, DepositUI } from "./views";
 
 const { ethers } = require("ethers");
 
@@ -411,7 +410,7 @@ function App(props) {
   }
 
   return (
-    <div className="App">
+    <div className="main__layout">
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
       {networkDisplay}
@@ -437,27 +436,27 @@ function App(props) {
               Filters
             </Link>
           </Menu.Item>
-          <Menu.Item key="/anchorui">
+          <Menu.Item key="/postsui">
             <Link
               onClick={() => {
-                setRoute("/anchorui");
+                setRoute("/postsui");
               }}
-              to="/anchorui"
+              to="/postsui"
             >
-              Pictures
+              Posts
             </Link>
           </Menu.Item>
-          <Menu.Item key="/history">
+          <Menu.Item key="/otherNfts">
             <Link
               onClick={() => {
-                setRoute("/history");
+                setRoute("/otherNfts");
               }}
-              to="/history"
+              to="/otherNfts"
             >
-              Videos
+              Other NFTs
             </Link>
           </Menu.Item>
-          <Menu.Item key="/depositui">
+          {/* <Menu.Item key="/depositui">
             <Link
               onClick={() => {
                 setRoute("/depositui");
@@ -466,8 +465,8 @@ function App(props) {
             >
               LIVE Stream
             </Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
+          </Menu.Item> */}
+          {/* <Menu.Item key="/subgraph">
             <Link
               onClick={() => {
                 setRoute("/subgraph");
@@ -476,7 +475,7 @@ function App(props) {
             >
               Subgraph
             </Link>
-          </Menu.Item>
+          </Menu.Item> */}
           {/* <Menu.Item key="/loginui">
             <Link
               onClick={() => {
@@ -595,8 +594,8 @@ function App(props) {
               loginUser={loginUser}
             />
           </Route> */}
-          <Route path="/anchorui">
-            <AnchorUI
+          <Route path="/postsui">
+            <PostUI
               signer={userProvider.getSigner()}
               provider={localProvider}
               tx={tx}
@@ -609,8 +608,8 @@ function App(props) {
               // setCashflowEvents={setCashflowEvents}
             />
           </Route>
-          <Route path="/history">
-            <HistoryUI
+          <Route path="/otherNfts">
+            <OtherNFTS
               signer={userProvider.getSigner()}
               provider={localProvider}
               tx={tx}
