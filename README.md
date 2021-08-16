@@ -29,7 +29,12 @@
 ### Zora
  
 - Using Zora contracts to mint zNFTs. We set the store contentHash and metadataHash. Also, we set the ask by the creator for anyone to buy this NFT on the platform.
-  
+
+### Superfluid
+ 
+- Instead of buying, users can decide to rent the NFT for a short period to just click a picture and post it. This is handled through superfluid stream.
+    
+
 ### Textile
  
 - Using textile to store all the required files including png, javascript, json etc. These files are encrypted and the user can change these files to update the NFT.
