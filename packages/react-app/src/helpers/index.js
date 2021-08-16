@@ -5,4 +5,6 @@ export { default as AppCanvas } from "./loadCanvas";
 export { default as Graph } from "./graphQuery";
 export * from "./nftStorage";
 export * from "./ceramic";
+export * from "./superfluid";
+
 export { default as uploadNFTStorage } from "./nftStorage";
