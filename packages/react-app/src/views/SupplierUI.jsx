@@ -82,10 +82,20 @@ export default function SupplierUI({
 
 
   const fetchCLPrice = async () =>{
-    const priceEth = await tx(writeContracts.PriceConsumerV3.ethPrice());
-    const priceMatic = await tx(writeContracts.PriceConsumerV3.maticPrice());
-    setEthPrice(priceEth);
-    setMaticPrice(priceMatic);
+    try{
+      if(readContracts){
+        let priceEthRaw = (await tx(readContracts.PriceConsumerV3.ethPrice())).toString();
+        let priceMaticRaw = (await tx(readContracts.PriceConsumerV3.maticPrice())).toString();
+        priceEthRaw = priceEthRaw/10**8
+        priceMaticRaw = priceMaticRaw/10**8
+
+        console.log("Prices: ", priceEthRaw, priceMaticRaw)
+        setEthPrice(priceEthRaw);
+        setMaticPrice(priceMaticRaw);
+      }
+    } catch(e){
+      console.log(e);
+    }
 
   }
   useEffect(() => {
@@ -94,7 +104,7 @@ export default function SupplierUI({
     }, 2000);
     
     fetchCLPrice()
-    },[writeContracts, readContracts]);
+    },[readContracts]);
     
   const connecTotHub = async () => {
     try {
