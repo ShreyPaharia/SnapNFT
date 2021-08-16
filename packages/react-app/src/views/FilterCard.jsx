@@ -12,6 +12,8 @@ function FilterCard({ nft }) {
     const { name, description } = metadataURI
     const [visible, setVisible] = useState(false);
 
+    console.log("nft", nft);
+    
     return (
         <div onClick={()=>setVisible(true)}>
         <Card
@@ -19,7 +21,7 @@ function FilterCard({ nft }) {
             style={{ width: 240 }}
             cover={<img alt="" src={imageURL} />}
         >
-            <Meta title={name} description={description} />
+            <Meta title={name} description={description && description.length >= 100 ? description.substring(0, 100) + '...' : description} />
         </Card>
         <Modal
               title="Filter Preview"

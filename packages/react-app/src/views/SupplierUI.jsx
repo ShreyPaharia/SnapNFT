@@ -4,7 +4,7 @@ import { SyncOutlined } from "@ant-design/icons";
 import { formatEther, parseEther } from "@ethersproject/units";
 import { Card, Button, Modal, DatePicker, Divider, Input, Popconfirm, Progress, Slider, Spin, Switch, AutoComplete, Space, Select, Radio, Form, Menu, Dropdown, Upload } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone, UserOutlined, DownOutlined, UploadOutlined, InboxOutlined } from '@ant-design/icons';
-import React, { useState, createRef } from "react";
+import React, { useState, createRef, useEffect } from "react";
 import {Ipfs, Slate, AppCanvas, uploadNFTStorage} from "../helpers"
 import { getIdentity, getOrCreateBucket, pushAllFile, getFilters, pushAllFile2, pullFile, logLinks} from "./../textileHubUtil"
 import { getBucketKey } from "./../textileHubUtill2"
@@ -81,6 +81,21 @@ export default function SupplierUI({
   // const getImage = () => takeScreenShot(ref.current);
 
 
+  const fetchCLPrice = async () =>{
+    const priceEth = await tx(writeContracts.PriceConsumerV3.ethPrice());
+    const priceMatic = await tx(writeContracts.PriceConsumerV3.maticPrice());
+    setEthPrice(priceEth);
+    setMaticPrice(priceMatic);
+
+  }
+  useEffect(() => {
+    setTimeout(() => {
+    
+    }, 2000);
+    
+    fetchCLPrice()
+    },[writeContracts, readContracts]);
+    
   const connecTotHub = async () => {
     try {
       let signer1;
@@ -192,6 +207,10 @@ const submitOnConfirmation = async () => {
                     description={description} 
                     imageURL={STORAGE_URL+`${ipfsHash}`}
                     /> 
+          <Card size="small" title="Current Prices" style={{ width: 200, height:150 }}>
+          <p>Price in Eth: {amount && (amount/ethPrice).toFixed(2)}</p>
+          <p>Price in Matic: {amount && (amount/maticPrice).toFixed(2)}</p>
+        </Card>        
         </div>
           <div className="create__details">
           <h1> Create your own filter</h1>
@@ -325,86 +344,8 @@ const submitOnConfirmation = async () => {
           >
           Upload
           </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-          <Button 
-          onClick={async () => {
-            try {
-              const bucketO = await connecTotHub();
-              await logLinks(bucketO.buckets, bucketO.bucketKey);
-              // console.log(" files to bucketObj ", bucketO);
-              console.log(" localStorage.getItem(path) ->", localStorage.getItem("path"));
-              
-              const filterArr = await pullFile(bucketO.buckets, bucketO.bucketKey, localStorage.getItem("path"));
-              console.log(" filterArr ", filterArr);
-              setFilters(filterArr);
-            } catch (err){
-              console.log(" ERROR  uploading", err);
-
-            }
-          
-          }}
-          >
-          Show Filters
-          </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-          <Button 
-          onClick={async () => {
-            try {
-              if(audiusPlayer!=null) {
-                audiusPlayer.stop()
-              }
-              const player = new Tone.Player({
-                url: "https://creatornode.audius.co/tracks/stream/e4Ybn",//"https://tonejs.github.io/audio/berklee/gurgling_theremin_1.mp3",
-                // loop: true,
-                autostart: true,
-              }).toDestination();
-              setAudiusPlayer(player);
-              // Tone.loaded().then(() => {
-              //   player.start();
-              // });
-
-            } catch (err){
-              console.log(" ERROR  Playing", err);
-
-            }
-          
-          }}
-          >
-          Test Tone
-          </Button> &nbsp;&nbsp;&nbsp;&nbsp;
-          <Button 
-          onClick={async () => {
-            try {
-
-              const oldNotes = /*(await ceramicIdx.get('notesList'))|| */{notes:[]};
-              await ceramicIdx.set('notesList', {
-                notes: [
-                  ...(oldNotes.notes),
-                  {name:"Post",description:"Post Desc",imageURL:"https://freepngimg.com/thumb/mario/20723-2-mario-image.png",songURL:"https://creatornode.audius.co/tracks/stream/e4Ybn"},
-                ]
-              })
-
-              // await idx.set('basicProfile', {
-              //   name: 'Alan Turing',
-              //   description: 'I make computers beep good.',
-              //   emoji: '💻',
-              // })
-              const xyz = await ceramicIdx.get('notesList');
-              console.log("notesList",xyz);
-
-            } catch (err){
-              console.log(" ERROR  Playing", err);
-
-            }
-          
-          }}
-          >
-          Test Ceramic Add
-          </Button> &nbsp;&nbsp;&nbsp;&nbsp;
         <Button  type="primary"
             onClick={async () => {
-              const priceEth = await tx(readContracts.PriceConsumerV3.ethPrice());
-              setEthPrice(priceEth);
-              const priceMatic = await tx(readContracts.PriceConsumerV3.maticPrice());
-              setMaticPrice(priceMatic);
 
               const bucketO = await connecTotHub();
               const links = await logLinks(bucketO.buckets, bucketO.bucketKey);

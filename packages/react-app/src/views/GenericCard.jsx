@@ -43,13 +43,12 @@ function GenericCard({ name,  description, imageURL,songURL,callBack}) {
               title={name}
               centered
               visible={visible}
-              onOk={() => { 
-                      }}
+              onOk={handleCancel}
               onCancel={handleCancel}
-              okText="Save"
+              okText="Ok"
               cancelText="Cancel"
               width={1000}>
-                    <canvas width="800" height="800" id='genericCanvass'></canvas>
+                <img src={imageURL} width="800" height="800"></img>
 
           </Modal>
 
