@@ -5,7 +5,7 @@ import { formatEther, parseEther } from "@ethersproject/units";
 import { Card, Button, Modal, DatePicker, Divider, Input, Popconfirm, Progress, Slider, Spin, Switch, AutoComplete, Space, Select, Radio, Form, Menu, Dropdown, Upload } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone, UserOutlined, DownOutlined, UploadOutlined, InboxOutlined } from '@ant-design/icons';
 import React, { useState, createRef, useEffect } from "react";
-import {Ipfs, Slate, AppCanvas, uploadNFTStorage} from "../helpers"
+import {Ipfs, Slate, AppCanvas, uploadNFTStorage, startSuperfluidFlow, stopSuperfluidFlow} from "../helpers"
 import { getIdentity, getOrCreateBucket, pushAllFile, getFilters, pushAllFile2, pullFile, logLinks} from "./../textileHubUtil"
 import { getBucketKey } from "./../textileHubUtill2"
 import AnchorService from "../anchorServices/anchor.service";
@@ -353,6 +353,34 @@ const submitOnConfirmation = async () => {
           }}
           >
           Upload
+          </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+
+          <Button 
+          onClick={async () => {
+            try {
+                await startSuperfluidFlow(userProvider,address,"0x3aC9dD168e7Faf91211097E55116008Ce2c222f5",'10000000000000000')
+            } catch (err){
+              console.log(" ERROR  uploading", err);
+
+            }
+          
+          }}
+          >
+          Test Start Flow
+          </Button> &nbsp;&nbsp;&nbsp;&nbsp;
+
+          <Button 
+          onClick={async () => {
+            try {
+                await stopSuperfluidFlow(userProvider,address,"0x3aC9dD168e7Faf91211097E55116008Ce2c222f5")
+            } catch (err){
+              console.log(" ERROR  uploading", err);
+
+            }
+          
+          }}
+          >
+          Test Stop Flow
           </Button> &nbsp;&nbsp;&nbsp;&nbsp;
         <Button  type="primary"
             onClick={async () => {
