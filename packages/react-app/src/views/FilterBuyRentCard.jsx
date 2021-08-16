@@ -5,18 +5,19 @@ import '../styles/CardAnt.css';
 import { useHistory } from 'react-router-dom'
 
 const { Meta } = Card;
-function FilterBuyRentCard({ nft, onOk, onCancel, name="", description="" }) {
+function FilterBuyRentCard({ nft, handleRentStart,handleRentStop,handleZoraBid, onOk, onCancel, name="", description="" }) {
     const { contentURI, imageURL, metadataURI } = nft;
     const [visible, setVisible] = useState(false);
 
+    console.log(imageURL);
     return (
-        <div onClick={()=>setVisible(true)}>
+        <div >
         <Card
             hoverable
             style={{ width: 240 }}
             cover={<img alt="" src={imageURL} />}
         >
-            <Meta title={name} description={description && description.length >= 100 ? description.substring(0, 100) + '...' : description} />
+            <Meta title={nft.name} description={nft.description && nft.description.length >= 100 ? nft.description.substring(0, 100) + '...' : nft.description} />
         </Card>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <Button 
@@ -30,7 +31,10 @@ function FilterBuyRentCard({ nft, onOk, onCancel, name="", description="" }) {
           Buy
           </Button> &nbsp;&nbsp;&nbsp;&nbsp;
           <Button 
-              onClick={async () => setVisible(true)}
+              onClick={async () => {
+                await handleRentStart(nft.holder,nft.rentAsk)
+                setVisible(true)
+              }}
           >
           Rent
           </Button> &nbsp;&nbsp;&nbsp;&nbsp;
@@ -41,14 +45,13 @@ function FilterBuyRentCard({ nft, onOk, onCancel, name="", description="" }) {
               visible={visible}
               onOk={ async() => { setVisible(false);
                 onOk()
-                // await startSuperfluidFlow(userProvider,address,"0x3aC9dD168e7Faf91211097E55116008Ce2c222f5",'10000000000000000')
               }}
-              onCancel={ async () => {setVisible(false);
-                onCancel();
-                // await stopSuperfluidFlow(userProvider,address,"0x3aC9dD168e7Faf91211097E55116008Ce2c222f5")
+              onCancel={ async () => {
+                setVisible(false);
+                await handleRentStop(nft.holder)
               }}
-              okText="Start Renting"
-              cancelText="Stop Renting"
+              okText="Post"
+              cancelText="Stop Rental"
               width={1000}>
                   <AppCanvas filterSrc={`${contentURI}/filter.js`} rootPath={`${contentURI}`}></AppCanvas>
           </Modal>

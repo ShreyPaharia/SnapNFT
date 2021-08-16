@@ -443,7 +443,7 @@ function App(props) {
               }}
               to="/unheldzNFTs"
             >
-              Unheld zNFTs
+              Filter Marketplace
             </Link>
           </Menu.Item>
           <Menu.Item key="/postsui">
@@ -634,6 +634,7 @@ function App(props) {
           </Route>
           <Route path="/unheldzNFTs">
             <UnheldzNFTs
+              zora={zora}
               signer={userProvider.getSigner()}
               userProvider={userProvider}
               provider={localProvider}

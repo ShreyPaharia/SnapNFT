@@ -16,58 +16,127 @@ export default function UnheldzNFTs({
   userProvider,
   writeContracts,
   readContracts,
+  zora
 }) {
 
   const [unheldzNFTs, setUnheldzNFTs] = useState([]);
   const fetchData = async () => {
-    //////NFT Query/////////
-    // on LOAD 
-       /////NFT Query/////////
     try{
-      // let metaJsonURL = "https://api.covalenthq.com/v1/"+chainId+"/address/"+address+"/balances_v2/?nft=true&key=ckey_c1c10fb1097b4e32b396e101878";
-      let metaJsonURL= "https://api.covalenthq.com/v1/80001/address/0x64bdCD3513388D93431F7D4ff429553bb173D0b2/balances_v2/?nft=true&key=ckey_c1c10fb1097b4e32b396e101878";
-      let json = await (await fetch(metaJsonURL)).json() 
-      let tokens = json.data.items.filter(item=> item.type=="nft" && item.nft_data!=null);
-      let data = []
-      console.log(tokens);
+      ////Total NFTs owned
+      
+      console.log("********zora address ", address);
+      let balance = (await zora.fetchTotalMedia()).toString();
+      console.log("Zora Balance: ",balance);
+      let tokenDataList = [];
+      // balance = 2;
+      // let tokenIds = [44,48]
+      //All tokens of USER
+      for(var i=0;i<balance;i++){
 
-      tokens.forEach(token => {
-          token.nft_data.forEach(nft => {
-            data.push({
-              name:nft.external_data.name,
-              description:nft.external_data.description,
-              imageURL:nft.external_data.image,
-            })
-        })
-      })
-      console.log(data);
+        ////Media id of NFT owned
+        const mediaId = (await zora.fetchMediaByIndex(i)).toString();
+        console.log("Media ",i," :",mediaId);
 
-      setUnheldzNFTs(data);
-    } catch(err){
-      console.log(" ERROR : ", err);
-    }
+        /////TokenData
+        const metadataURI = (await zora.fetchMetadataURI(mediaId));
+        const contentURI = (await zora.fetchContentURI(mediaId));
+
+        let tokenData = {
+          mediaId:mediaId,
+          contentURI  : contentURI,
+          metadataURI : metadataURI
+        }
+        tokenDataList.push(tokenData);
+        ////
+      }
+      // tokenDataList.map( async (item) => {
+      let nftFilterArr = [];
+      for(let i=0;i<tokenDataList.length; i++){
+        let item  = tokenDataList[i];
+        console.log("iteem ->", item);
+        const metaJsonURL = (item.metadataURI && item.metadataURI.replace("https://ipfs://","https://ipfs.io/ipfs/")) || "";
+        // const metaJson = await fetch(metaJsonURL);
+        let metaData, metaJson;
+        try{
+          metaData = await (await fetch(metaJsonURL));
+          if(!metaData) continue;
+          metaJson = await metaData.json()
+
+        }catch(e){
+          console.log(e)
+        }
+        
+        if(!metaJson || metaJson.type!="SNAP_NFT")continue;
+        const curOwner = await zora.fetchOwnerOf(item.mediaId);
+        if(curOwner == address) continue;
+
+        const zoraAsk = await zora.fetchCurrentAsk(item.mediaId);
+        let data = {
+          id:item.mediaId,
+          holder:curOwner,
+          rentAsk:'1000000000000000',//zoraAsk,
+          contentURI:(item.contentURI && item.contentURI.split("_")[0])||"",
+          name:metaJson.name,
+          description:metaJson.description,
+          imageURL:(( metaJson.image && metaJson.image.replace("ipfs://","https://ipfs.io/ipfs/")) || "")
+        }
+
+        nftFilterArr.push(data);
+        console.log("iteem2 ->", data);
+
+        // nftFilterArr.push(item)
+        }
+      // });
+      console.log("tokenDataList, ", nftFilterArr);
+      setUnheldzNFTs(nftFilterArr);
+      /////NFT Query/////////
+
+      } catch(err){
+        console.log(" ERROR : ", err);
+
+      }
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-    }, 2000);
-    fetchData()
-  },[address, chainId]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //   }, 2000);
+  //   fetchData()
+  // },[address, chainId]);
 
-  const onOk = async () => await stopSuperfluidFlow(userProvider,address,"0x3aC9dD168e7Faf91211097E55116008Ce2c222f5")
-  const onCancel = async () => await startSuperfluidFlow(userProvider,address,"0x3aC9dD168e7Faf91211097E55116008Ce2c222f5",'10000000000000000');
-
+  const handleRentStart = async (recipient,amount) => {
+    try{
+      await startSuperfluidFlow(userProvider,address,recipient,amount);
+    } catch(e){
+      console.log(e);
+    }
+  }
+  const handleRentStop = async (recipient) => {
+    try {
+      await stopSuperfluidFlow(userProvider,address,recipient)
+    } catch(e){
+      console.log(e);
+    }
+  }
+  const handleZoraBid = async(mediaId,bid) => {
+    try {
+      zora.setBid(mediaId, bid)
+    } catch (err){
+      console.log(" ERROR  uploading", err);
+    }
+  }
 
   return(
     <div>
+      <Button onClick={()=>fetchData()}>Refresh</Button>
       <div  style={{ border: "1px solid #cccccc", padding: 16, width: 1200, margin: "auto", marginTop: 64, padding: 60 }}>
       <div className="market">
       {unheldzNFTs && unheldzNFTs.map((unheldzNFTs) => (
                     <FilterBuyRentCard
                     key={unheldzNFTs.id}
                     nft={unheldzNFTs}
-                    onOk={onOk}
-                    onCancel={onCancel}
+                    handleRentStart={handleRentStart}
+                    handleRentStop={handleRentStop}
+                    handleZoraBid={handleZoraBid}
                     />
                 ))
                 }
