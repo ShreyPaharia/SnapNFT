@@ -21,7 +21,7 @@ function GenericCard({ name,  description, imageURL,songURL,callBack}) {
     const handleClick = () => {
         if(songURL){
             const player = new Tone.Player({
-                url: "https://creatornode.audius.co/tracks/stream/e4Ybn",//"https://tonejs.github.io/audio/berklee/gurgling_theremin_1.mp3",
+                url: songURL,
                 // loop: true,
                 autostart: true,
               }).toDestination();

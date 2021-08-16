@@ -7,4 +7,4 @@ export { default as Hints } from "./Hints";
 export { default as Subgraph } from "./Subgraph";
 export { default as ExampleUI } from "./ExampleUI";
 export { default as HomeUI } from "./HomeUI";
-export { default as DepositUI } from "./DepositUI";
+export { default as UnheldzNFTs } from "./UnheldzNFTs";

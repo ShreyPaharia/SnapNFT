@@ -34,7 +34,7 @@ import {
 } from "./hooks";
 import AuthService from "./authServices/auth.service";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph, SupplierUI, PostUI, LoginUI, RegisterUI, OtherNFTS, HomeUI, DepositUI } from "./views";
+import { ExampleUI, Hints, Subgraph, SupplierUI, PostUI, LoginUI, RegisterUI, OtherNFTS, HomeUI, UnheldzNFTs } from "./views";
 
 const { ethers } = require("ethers");
 
@@ -436,6 +436,16 @@ function App(props) {
               Filters
             </Link>
           </Menu.Item>
+          <Menu.Item key="/unheldzNFTs">
+            <Link
+              onClick={() => {
+                setRoute("/unheldzNFTs");
+              }}
+              to="/unheldzNFTs"
+            >
+              Unheld zNFTs
+            </Link>
+          </Menu.Item>
           <Menu.Item key="/postsui">
             <Link
               onClick={() => {
@@ -622,22 +632,21 @@ function App(props) {
               loginUser={loginUser}
             />
           </Route>
-
-          <Route path="/depositui">
-            <DepositUI
-              name="CashflowTokens"
-              mmAddress={address}
+          <Route path="/unheldzNFTs">
+            <UnheldzNFTs
               signer={userProvider.getSigner()}
+              userProvider={userProvider}
               provider={localProvider}
               tx={tx}
+              chainId={targetNetwork.chainId}
               writeContracts={writeContracts}
               readContracts={readContracts}
               address={address}
               blockExplorer={blockExplorer}
-              // cashflowContract={cashflowContract}
-              // setCashflowEvents={setCashflowEvents}
+              loginUser={loginUser}
             />
           </Route>
+
           {/* <Route path="/registerui">
             <RegisterUI
               setRoute={setRoute}
