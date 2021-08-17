@@ -8,3 +8,4 @@ export { default as Subgraph } from "./Subgraph";
 export { default as ExampleUI } from "./ExampleUI";
 export { default as HomeUI } from "./HomeUI";
 export { default as UnheldzNFTs } from "./UnheldzNFTs";
+export { default as SongsUI } from "./SongsUI"

@@ -1,38 +1,60 @@
 import React, { useState, createRef } from "react";
 import { Card, Modal, Table } from "antd";
 import { AppCanvas } from "../helpers"
-
-// import { Icon } from '@iconify/react';
-// import ethereumIcon from '@iconify-icons/mdi/ethereum';
 import '../styles/CardAnt.css';
 import { useHistory } from 'react-router-dom'
 import { useScreenshot, createFileName } from "use-react-screenshot";
+import { getIpfsHashByFile } from "./../textileHubUtil"
+import {  STORAGE_URL } from "../constants";
+import { SongsUI } from "./index";
+// import { ExampleUI, Hints, Subgraph, SupplierUI, PostUI, LoginUI, RegisterUI, OtherNFTS, HomeUI, UnheldzNFTs } from "./views"
+
 const { Meta } = Card;
-function FilterCard({ nft }) {
+function FilterCard({ nft, ceramicIdx}) {
     const { contentURI, imageURL, metadataURI } = nft;
-    const { name, description } = metadataURI
+    const { name, description } = metadataURI || {}
     const [visible, setVisible] = useState(false);
+    const [ipfsHash, setIpfsHash] = useState("");
+    const [selectedSong, setSelectedSong] = useState("");
     const ref = createRef(null);
     const [image, takeScreenShot] = useScreenshot({
       type: "image/jpeg",
       quality: 1.0
     });
-  
-    const download = (image, { name = "img", extension = "jpg" } = {}) => {
+    const addToCeramic = async (ceramicIdx, ipfsHash, audiusHash) =>{
+      try {
+        console.log("addToCeramic ipfsHash", ipfsHash);
+
+        const oldNotes = (await ceramicIdx.get('notesList'))|| {notes:[]};
+        await ceramicIdx.set('notesList', {
+          notes: [
+            ...(oldNotes.notes),
+            { name:`screenShot from ${name}`, description:`screenShot desc: ${description}`, imageURL:STORAGE_URL+`${ipfsHash}`, songURL:audiusHash?`https://creatornode.audius.co/tracks/stream/${audiusHash}`:""},
+          ]
+        })
+
+        const xyz = await ceramicIdx.get('notesList');
+        console.log("new notesList after Add ",xyz);
+
+      } catch (err){
+        console.log(" ERROR  Playing", err);
+      }
+    }
+    const downloadSnap = async (image, { extension = "jpg" } = {}) => {
+      const fileName = `screenShot from ${name}`;
+      const fileNameExt = createFileName(extension, fileName);
       const a = document.createElement("a");
       a.href = image;
-      a.download = createFileName(extension, name);
+      a.download = fileNameExt;
       a.click();
+      const ipfsHash1 = await getIpfsHashByFile(image, fileNameExt, setIpfsHash)
+      addToCeramic(ipfsHash1)
     };
-  
-    const downloadScreenshot = () => takeScreenShot(ref.current).then(download);
-  
-  
+    const downloadScreenshot = () => takeScreenShot(ref.current).then(downloadSnap);
     // console.log("nft", nft);
-    
     return (
-        <div onClick={()=>setVisible(true)}>
-        <Card
+        <div >
+        <Card onClick={()=>setVisible(true)}
             hoverable
             style={{ width: 240 }}
             cover={<img alt="" src={imageURL} />}
@@ -53,6 +75,7 @@ function FilterCard({ nft }) {
               okText="Save"
               cancelText="Cancel"
               width={1000}>
+                <SongsUI setSelectedSong={setSelectedSong}></SongsUI>
                 <div  ref={ref}         style={{
                                       border: "1px solid #ccc",
                                       padding: "10px",

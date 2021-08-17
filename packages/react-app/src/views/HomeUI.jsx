@@ -4,9 +4,7 @@ import { formatEther, parseEther } from "@ethersproject/units";
 import { useContractExistsAtAddress, useContractLoader, useBalance } from "../hooks";
 import Account from "../components/Account";
 import FilterCard from "./FilterCard"
-import '../styles/Card.css';
-
-const axios = require('axios');
+import '../styles/CardAnt.css';
 
 
 export default function HomeUI({
@@ -25,6 +23,7 @@ export default function HomeUI({
   readContracts,
   address,
   zora,
+  ceramicIdx,
 }) {
 
   const [ filterNFT, setFilterNFT] = useState([]);
@@ -36,16 +35,22 @@ export default function HomeUI({
                 try{
                 ////Total NFTs owned
                 console.log("********zora address ", address);
-                const balance = (await zora.fetchBalanceOf(address)).toString();
+                let balance = (await zora.fetchBalanceOf(address)).toString();
                 console.log("Zora Balance: ",balance);
                 let tokenDataList = [];
 
                 //All tokens of USER
+                // balance=2
+                // let mediaList = [44,48]
                 for(var i=0;i<balance;i++){
 
                   ////Media id of NFT owned
                   const mediaId = (await zora.fetchMediaOfOwnerByIndex(address,i)).toString();
+                  // const mediaId = mediaList[i]
                   console.log("Media ",i," :",mediaId);
+                  // if(){
+                  //   zora.burn()
+                  // }
 
                   /////TokenData
                   const contentHash = (await zora.fetchContentHash(mediaId));
@@ -64,24 +69,34 @@ export default function HomeUI({
                 }
                 // tokenDataList.map( async (item) => {
                 const nftFilterArr = [];
+                console.log("tokenDataList, ", tokenDataList);
+
                 for(let i=0;i<tokenDataList.length; i++){
                     const item  = tokenDataList[i];
-                  console.log("iteem ->", item);
+                  // console.log("iteem ->", item);
                   const metaJsonURL = (item.metadataURI && item.metadataURI.replace("https://ipfs://","https://ipfs.io/ipfs/")) || "";
                   // const metaJson = await fetch(metaJsonURL);
-                  const metaJson = await (await fetch(metaJsonURL)).json();
+                  // const metaJson = await (await fetch(metaJsonURL)).json();
+                  let metaJson = {};
+                  try {
+                    const metaJsonStr = await fetch(metaJsonURL);
+                    metaJson = await (metaJsonStr).json();
+                    } catch(err){
+                      console.log("Error ", err);
+                    }
 
                   item.contentURI=(item.contentURI && item.contentURI.split("_")[0])||"";
                   item.metadataURI=metaJson;
                   item.imageURL = (( metaJson.image && metaJson.image.replace("ipfs://","https://ipfs.io/ipfs/")) || "");
-                  // console.log("iteem2 ->", item);
                   // return item;
-                  tokenDataList[i] = item;
-                  // nftFilterArr.push(item)
+                  // tokenDataList[i] = item;
+                  // setFilterNFT(tokenDataList);
+                  console.log("item ->",i, item);
+                  nftFilterArr.push(item)
                   }
                 // });
-                setFilterNFT(tokenDataList);
-                console.log("tokenDataList, ", tokenDataList);
+                console.log("nftFilterArr, ", nftFilterArr);
+                setFilterNFT(nftFilterArr);
                 /////NFT Query/////////
 
                 } catch(err){
@@ -108,6 +123,7 @@ export default function HomeUI({
                     <FilterCard
                     key={nft.contentHash}
                     nft={nft}
+                    ceramicIdx={ceramicIdx}
                     />
                 ))
                 }

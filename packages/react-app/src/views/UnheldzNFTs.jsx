@@ -6,6 +6,7 @@ import { Button, Card, Divider, Descriptions, Table, Tabs, Modal } from "antd";
 import React, { useState, useEffect, useCallback } from "react";
 import FilterBuyRentCard from "./FilterBuyRentCard"
 import { startSuperfluidFlow, stopSuperfluidFlow} from "../helpers"
+import '../styles/Card.css';
 
 export default function UnheldzNFTs({
   name,
@@ -97,11 +98,11 @@ export default function UnheldzNFTs({
       }
   };
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //   }, 2000);
-  //   fetchData()
-  // },[address, chainId]);
+  useEffect(() => {
+    setTimeout(() => {
+    }, 2000);
+    fetchData()
+  },[address]);
 
   const handleRentStart = async (recipient,amount) => {
     try{
@@ -119,7 +120,9 @@ export default function UnheldzNFTs({
   }
   const handleZoraBid = async(mediaId,bid) => {
     try {
-      zora.setBid(mediaId, bid)
+      console.log("mediaId, bid ",mediaId, bid);
+
+      await zora.setBid(mediaId, bid)
     } catch (err){
       console.log(" ERROR  uploading", err);
     }
@@ -127,7 +130,7 @@ export default function UnheldzNFTs({
 
   return(
     <div>
-      <Button onClick={()=>fetchData()}>Refresh</Button>
+      {/* <Button onClick={()=>fetchData()}>Refresh</Button> */}
       <div  style={{ border: "1px solid #cccccc", padding: 16, width: 1200, margin: "auto", marginTop: 64, padding: 60 }}>
       <div className="market">
       {unheldzNFTs && unheldzNFTs.map((unheldzNFTs) => (
@@ -137,6 +140,7 @@ export default function UnheldzNFTs({
                     handleRentStart={handleRentStart}
                     handleRentStop={handleRentStop}
                     handleZoraBid={handleZoraBid}
+                    zora={zora}
                     />
                 ))
                 }

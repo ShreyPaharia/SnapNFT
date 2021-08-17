@@ -560,6 +560,7 @@ function App(props) {
               readContracts={readContracts}
               address={address}
               blockExplorer={blockExplorer}
+              ceramicIdx={ceramicIdx}
             />
           {/* <Contract
               name="USDC"

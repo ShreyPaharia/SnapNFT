@@ -22,8 +22,8 @@ export default function OtherNFTS({
     // on LOAD 
        /////NFT Query/////////
     try{
-      let metaJsonURL = "https://api.covalenthq.com/v1/"+chainId+"/address/"+address+"/balances_v2/?nft=true&key=ckey_c1c10fb1097b4e32b396e101878";
-      // let metaJsonURL= "https://api.covalenthq.com/v1/80001/address/0x64bdCD3513388D93431F7D4ff429553bb173D0b2/balances_v2/?nft=true&key=ckey_c1c10fb1097b4e32b396e101878";
+      // let metaJsonURL = "https://api.covalenthq.com/v1/"+chainId+"/address/"+address+"/balances_v2/?nft=true&key=ckey_c1c10fb1097b4e32b396e101878";
+      let metaJsonURL= "https://api.covalenthq.com/v1/80001/address/0x64bdCD3513388D93431F7D4ff429553bb173D0b2/balances_v2/?nft=true&key=ckey_c1c10fb1097b4e32b396e101878";
       let json = await (await fetch(metaJsonURL)).json() 
       let tokens = json.data.items.filter(item=> item.type=="nft" && item.nft_data!=null);
       let data = []

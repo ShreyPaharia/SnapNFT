@@ -75,7 +75,8 @@
     flex: 1;
     justify-content: flex-end;
     align-items: center;
-    margin-top: 100px !important;
+    margin-top: 60px !important;
+    margin-bottom: 20px !important;
     /* padding: 4px;
 
     background: rgba( 255, 255, 255, 0.1 );

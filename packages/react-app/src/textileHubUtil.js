@@ -3,6 +3,7 @@ import util, { log } from "util";
 import glob from "glob";
 import { hashSync } from 'bcryptjs'
 import { BigNumber, utils } from 'ethers'
+import {Ipfs } from "./helpers"
 
 import { Buckets, UserAuth, Client, KeyInfo, PrivateKey } from "@textile/hub";
 import { TEXTILE_HUB_KEY, TEXTILE_HUB_SECRET } from "./constants";
@@ -176,7 +177,6 @@ const insertFile = (buckets, bucketKey, file, path, orgFile) => {
       // Finally, push the full file to the bucket
       buckets.pushPath(bucketKey, path, binaryStr).then((raw) => {
         console.log(" raw ", raw);
-        
         resolve(raw);
       })
     }
@@ -193,41 +193,39 @@ export const pushAllFile2 = async (files, buckets, bucketKey) => {
     await insertFile(buckets, bucketKey, fileName, filePath, orgFile);
 
   }
-    // files.forEach(async file => {
-    //   const fileName = file.name;
-    //   const orgFile = file.originFileObj;
-    //   const filePath = orgFile.webkitRelativePath
-    //   await insertFile(buckets, bucketKey, fileName, filePath, orgFile);
-    // })
   }
 
-// export const pushAllFile = async (files, buckets, bucketKey, dir) => {
-//   // const files = await globDir("<dir glob options>");
-//   return await Promise.all(
-//     files.map(async file => {
-//       const fileName = file.name;
-//       const orgFile = file.originFileObj;
-//       const filePath = file.webkitRelativePath
-//     }),
-//   );
-// };
+  function blobToFile(theBlob, fileName){
+    // theBlob.lastModifiedDate = new Date();
+    // theBlob.name = fileName;
+    const blobFile = new File([theBlob], fileName, {
+      type: "image/jpeg",
+    });
+    console.log(" theBlob ", theBlob);
+    console.log(" theBlob.type ", theBlob.type);
+    return blobFile;
+  }
+  function readFileAsync(file) {
+    return new Promise((resolve, reject) => {
+      let reader = new window.FileReader();
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+    })
+  }
 
-// const logoFile = e.fileList[0] && e.fileList[0].originFileObj;
-// const logoReader = new window.FileReader()
-// logoReader.readAsArrayBuffer(logoFile)
-// logoReader.onloadend = async () => {
-//   const buff = Buffer(logoReader.result);
-//   setBuffer(buff);
-//   console.log('buffer', buff);
-//   if(STORAGE==="IPFS"){
-//     Ipfs.files.add(buff, (error, result) => {
-//       if(error) {
-//         console.error(error)
-//         return
-//       }
-//       console.log(" ipfs Hash ", result[0] && result[0].hash);
-//       setIpfsHash(result[0] && result[0].hash);
-//     })
+  export const getIpfsHashByFile = async (blobObj, fileName, setHashFun) =>{
+      const file = blobToFile(blobObj, fileName)
+      // const file = blobObj;
+       const readerResult = await readFileAsync(file);
+       const buff = Buffer(readerResult);
+       const result = await Ipfs.files.add(buff);
+       console.log("result[0]", result[0]);
+       setHashFun(result[0] && result[0].hash);
+       return result[0] && result[0].hash
+  }
 
 // This method requires that you run "getOrCreate" or have specified "withThread"
 export const logLinks = async (buckets, bucketKey) => {
